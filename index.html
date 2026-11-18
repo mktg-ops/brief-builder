@@ -1,0 +1,2133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brief Builder | H-E-B</title>
+<style>
+@font-face{font-family:"HEB Gotham";font-weight:300;src:local("Gotham Light"),local("Gotham-Light"),local("GothamSSm-Light")}
+@font-face{font-family:"HEB Gotham";font-weight:400;src:local("Gotham Book"),local("Gotham-Book"),local("GothamSSm-Book")}
+@font-face{font-family:"HEB Gotham";font-weight:500;src:local("Gotham Medium"),local("Gotham-Medium"),local("GothamSSm-Medium")}
+@font-face{font-family:"HEB Gotham";font-weight:700;src:local("Gotham Bold"),local("Gotham-Bold"),local("GothamSSm-Bold")}
+:root{
+  --red:#E1251B; --red-dk:#B81D14; --ink:#1D1D1D; --ink-2:#4A4844; --ink-3:#77746E;
+  --paper:#FFFFFF; --ground:#F5F4F1; --line:#E4E2DD; --tint:#FBEAE8; --yellow:#FCD131;
+  --font:"HEB Gotham","Gotham","Gotham SSm","Montserrat","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --rail:292px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.55}
+a{color:inherit}
+b,strong,th{font-weight:500}
+:focus-visible{outline:3px solid var(--red);outline-offset:3px;border-radius:2px}
+button,select,input,textarea{font:inherit;color:inherit}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:#fff;padding:8px 12px;z-index:50}
+.skip:focus{left:8px}
+
+/* ---------- Front door ---------- */
+#door{min-height:100vh;display:flex;flex-direction:column;background:var(--paper)}
+.door-top{display:flex;justify-content:space-between;align-items:center;padding:28px clamp(20px,5vw,72px)}
+.mark{display:flex;align-items:center;gap:12px;text-decoration:none}.mark .logo{height:27px;width:auto;display:block}
+.mark .chip{min-width:46px;height:30px;padding:0 7px;border-radius:7px;background:var(--red);color:#fff;display:grid;place-items:center;font-weight:500;font-size:12px;letter-spacing:-.01em;white-space:nowrap}
+.mark b{font-weight:500;font-size:15px}
+.mark span{color:var(--ink-3);font-size:14px}
+.door-top nav a{font-size:14px;color:var(--ink-2);text-decoration:none;margin-left:22px}
+.door-top nav a:hover{color:var(--red)}
+.door-main{flex:1;padding:6vh clamp(20px,5vw,72px) 0;max-width:1320px}
+.sentence{font-size:clamp(26px,6vw,72px);line-height:1.14;font-weight:300;letter-spacing:-.025em;margin:0;max-width:20ch}
+.sentence .nw{white-space:nowrap}
+.sentence .blank{position:relative;display:inline-block;color:var(--red);font-weight:400}
+.sentence .blank select{appearance:none;-webkit-appearance:none;text-overflow:ellipsis;background:transparent;border:0;border-bottom:.07em solid var(--red);color:var(--red);font-weight:400;letter-spacing:inherit;font-size:inherit;line-height:1.05;padding:0 .9em 0 0;cursor:pointer;border-radius:0;max-width:100%}
+.sentence .blank::after{content:"";position:absolute;right:.18em;top:52%;width:.28em;height:.28em;border-right:.06em solid var(--red);border-bottom:.06em solid var(--red);transform:translateY(-70%) rotate(45deg);pointer-events:none}
+.sentence select:focus-visible{outline:none;background:var(--tint)}
+.door-lede{margin:28px 0 0;color:var(--ink-2);font-size:18px;max-width:52ch}
+.surface{margin:7vh 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));border-top:1px solid var(--line)}
+.surface li{border-bottom:1px solid var(--line)}
+.surface a{display:grid;grid-template-columns:64px 1fr;gap:4px 8px;padding:26px 28px 28px 0;text-decoration:none;height:100%;align-content:start}
+.surface .ref{font-size:14px;color:var(--red);font-weight:500;padding-top:3px;font-variant-numeric:tabular-nums}
+.surface .t{font-weight:500;font-size:18px;line-height:1.3}
+.surface .d{grid-column:2;color:var(--ink-2);font-size:15px}
+.surface a:hover .t{color:var(--red)}
+.door-foot{padding:40px clamp(20px,5vw,72px) 36px;display:flex;flex-wrap:wrap;gap:10px 28px;align-items:baseline;color:var(--ink-3);font-size:14px}
+.door-foot a{color:var(--ink-2)}
+
+/* ---------- Book (chapters) ---------- */
+#book{display:none}
+body.in-book #door{display:none}
+body.in-book #book{display:block}
+.rail{position:fixed;inset:0 auto 0 0;width:var(--rail);background:var(--paper);border-right:1px solid var(--line);overflow-y:auto;display:flex;flex-direction:column}
+.rail .mark{padding:22px 24px;border-bottom:1px solid var(--line);margin:0}
+.rail ol{list-style:none;margin:0;padding:0}
+.rail .grp{border-bottom:1px solid var(--line);padding:18px 0 14px}
+.rail .gl{display:block;padding:0 24px 8px;font-size:15px;font-weight:500;color:var(--ink)}
+.rail .ch{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 24px 7px 40px;text-decoration:none;color:var(--ink);font-size:15px;line-height:1.35}
+.rail .ch::after{content:"";flex:none;width:6px;height:6px;border-right:1.5px solid var(--ink-3);border-bottom:1.5px solid var(--ink-3);transform:rotate(45deg) translateY(-2px);transition:transform .15s}
+.rail .ch[aria-current="page"]::after{transform:rotate(-135deg) translateY(-1px)}
+.rail .ch:hover{color:var(--red)}
+.rail .ch[aria-current="page"]{font-weight:500}
+.rail .ch em{font-style:normal;color:var(--ink-3);font-weight:400;font-size:13px}
+.rail .subs{margin:2px 0 8px}
+.rail .subs a{display:block;padding:5px 24px 5px 56px;font-size:14px;color:var(--ink-3);text-decoration:none;line-height:1.35}
+.rail .subs a:hover{color:var(--ink)}
+.rail .subs a.on{color:var(--ink);font-weight:500}
+.rail-foot{margin-top:auto;padding:20px 24px;font-size:13px;color:var(--ink-3)}
+.rail-foot p{margin:0 0 6px}
+.rail-foot a{color:var(--ink-2)}
+.topbar{display:none}
+.pane{margin-left:var(--rail);min-height:100vh;background:var(--paper)}
+.chapter{display:none;padding:56px clamp(24px,4vw,56px) 120px;max-width:1200px}
+.chapter.on{display:block}
+.sec.wide{grid-template-columns:minmax(0,1fr);gap:20px}
+.sec > .panel,.sec > .media{margin-top:12px}
+.sec > .panel + .body,.sec > .media + .body{margin-top:16px}
+.sec.wide > header{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px}
+.sec.wide > header .sn{margin:0}
+.sec.wide > header .src{margin:0}
+.sec.wide .body{max-width:none}
+.chapter .sec.extra{display:none}
+.chapter.show-extra .sec.extra{display:grid}
+.more-wrap{margin:8px 0 48px}
+.ch-head .one{margin:28px 0 0;padding:22px 26px 24px;background:var(--red);color:#fff;border-radius:14px;font-size:clamp(20px,1.9vw,25px);font-weight:400;line-height:1.3;letter-spacing:-.01em;max-width:30em;text-wrap:pretty}
+.ch-head .one b{display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;margin-bottom:10px;opacity:.85}
+.ch-head .one b::before{content:"";width:8px;height:8px;border-radius:50%;background:#fff}
+.big,.ch-head h1,h2,.stop-line{text-wrap:balance}
+p,li,span{text-wrap:pretty}
+.check-steps{grid-column:1/-1;list-style:none;padding:0;margin:8px 0 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;counter-reset:cs}
+.check-steps li{counter-increment:cs;background:var(--ground);border-radius:12px;padding:20px 22px}
+.check-steps li::before{content:counter(cs);display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;font-size:14px;margin-bottom:14px}
+.check-steps b{display:block;font-size:17px;font-weight:500;margin-bottom:6px}
+.check-steps span{font-size:15px;color:var(--ink-2);line-height:1.45}
+.chains{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.chain{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px 24px}
+.chain.feat{grid-column:1/-1;background:var(--ink);color:#fff;border-color:var(--ink)}
+.chain .cn{font-size:20px;font-weight:500;margin:0 0 14px}
+.chain .cn small{font-size:13px;font-weight:400;color:var(--ink-3);margin-left:8px}
+.chain.feat .cn small{color:rgba(255,255,255,.6)}
+.chain p{margin:0 0 10px;font-size:16px;line-height:1.45}
+.chain i{display:block;font-style:normal;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--red);font-weight:500;margin-bottom:2px}
+.chain .idea{margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line)}
+.chain.feat .idea{border-color:rgba(255,255,255,.2);font-size:22px;font-weight:300}
+.bars{display:grid;gap:10px;margin:8px 0 18px}
+.bars > div{display:grid;grid-template-columns:150px 1fr 80px;align-items:center;gap:14px;font-size:15px}
+.bars i{display:block;height:28px;border-radius:6px;background:var(--ground);position:relative;overflow:hidden}
+.bars i::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--w);background:var(--red);border-radius:6px}
+.bars .ref i::after{background:var(--ink-3)}
+.bars .ref{color:var(--ink-3)}
+.bars b{font-weight:500;text-align:right}
+.tline{list-style:none;padding:0;margin:20px 0 28px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 16px;position:relative}
+.tline::before{content:"";position:absolute;left:0;right:0;top:41px;height:2px;background:var(--line)}
+.tline li{position:relative;padding-top:62px}
+.tline li::before{content:"";position:absolute;left:0;top:34px;width:16px;height:16px;border-radius:50%;background:var(--paper);border:2px solid var(--ink)}
+.tline li.on::before{background:var(--red);border-color:var(--red)}
+.tline em{position:absolute;top:0;left:0;font-style:normal;font-size:13px;color:var(--ink-3)}
+.tline b{display:block;font-size:17px;font-weight:500;margin-bottom:6px}
+.tline span{font-size:15px;color:var(--ink-2);line-height:1.45}
+.hold{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;background:var(--ground);border-radius:12px;padding:22px 24px;margin-bottom:20px}
+.hold .ex-label,.hold .hold-note{grid-column:1/-1;margin:0}
+.hold .ex-label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+.hold .hold-note{font-size:14px;color:var(--ink-3)}
+.hold div b{display:block;font-size:15px;font-weight:500;color:var(--ink-3)}
+.hold div span{font-size:24px;font-weight:300}
+.stop{grid-column:1/-1;padding:32px 36px}
+.stop-line{font-size:clamp(24px,2.6vw,34px);font-weight:300;line-height:1.25;margin:0 0 26px;letter-spacing:-.01em}
+.stop-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.stop-grid b{display:block;color:var(--red);font-weight:500;font-size:16px;margin-bottom:6px}
+.stop-grid span{font-size:15px;line-height:1.45;opacity:.85}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:4px 0 16px}
+.stats div{border-top:2px solid var(--ink);padding:18px 4px 0}
+.stats b{display:block;font-size:clamp(38px,4vw,56px);font-weight:300;letter-spacing:-.03em;line-height:1;margin-bottom:12px;font-variant-numeric:tabular-nums}
+.stats span{font-size:15px;line-height:1.45;color:var(--ink-2)}
+.behaviors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:8px}
+.behaviors div{background:var(--ground);border-radius:12px;padding:22px 22px 24px;display:flex;flex-direction:column}
+.behaviors .bb{margin:0 0 14px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;font-weight:500;color:var(--red)}
+.behaviors .bh{margin:0;font-size:20px;font-weight:300;line-height:1.3;letter-spacing:-.01em}
+.behaviors .bi{margin:auto 0 0;padding-top:18px;font-size:16px;font-weight:500}
+.behaviors .bi i{display:block;font-style:normal;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:500;margin-bottom:2px}
+.gloss{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 40px;margin:0}
+.gloss div{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:14px 0;border-top:1px solid var(--line)}
+.gloss dt{font-weight:500;font-size:15px}
+.gloss dd{margin:0;font-size:15px;line-height:1.45;color:var(--ink-2)}
+.src:not(.p){display:none}
+.tools3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:8px 0 14px}
+.toolcard{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px 22px 24px;display:flex;flex-direction:column;align-items:flex-start}
+.toolcard .tc-name{font-size:26px;font-weight:400;margin:0 0 4px;letter-spacing:-.01em}
+.toolcard .tc-status{font-size:13px;color:var(--red);font-weight:500;margin:0 0 14px}
+.toolcard p,.toolcard li{font-size:15px;line-height:1.45}
+.toolcard ol{padding-left:20px;margin:0 0 18px}
+.toolcard .btn{margin-top:auto;text-decoration:none}
+.toolcard .tc-note{font-size:13px;color:var(--ink-3);margin:10px 0 0}
+.tc-btns{margin-top:auto;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.tc-btns .btn{margin-top:0}
+.btn.off{opacity:.4;cursor:default}
+.xref{color:inherit;text-decoration:underline;text-decoration-color:var(--red);text-underline-offset:3px;text-decoration-thickness:1.5px}
+.xref:hover{color:var(--red)}
+.ch-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 40px;align-items:start;padding-bottom:40px;margin-bottom:8px}
+.ch-head .num{font-size:14px;color:var(--red);font-weight:500;margin:0 0 12px}
+.ch-head h1{font-size:clamp(36px,4.4vw,60px);line-height:1.04;letter-spacing:-.03em;font-weight:400;margin:0}
+.ch-head .sum{font-size:18px;line-height:1.5;color:var(--ink-2);margin:34px 0 0;max-width:48ch}
+.ch-head .sum + .sum{margin-top:12px;font-size:16px}
+.sec{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px 40px;padding:36px 0;scroll-margin-top:24px}
+.sec > header{position:relative}
+.sn{display:block;font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums;margin-bottom:6px;text-decoration:none}
+.sn:hover{color:var(--red)}
+.sec h2{font-size:24px;line-height:1.25;letter-spacing:-.015em;margin:0;font-weight:400}
+.src{display:block;margin-top:10px;font-size:12px;color:var(--ink-3)}
+.src::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ink-3);margin-right:7px;vertical-align:1px}
+.src.p::before{background:transparent;border:1px solid var(--ink-3)}
+.src.h::before{background:var(--red)}
+.body{max-width:68ch}
+.body > *:first-child{margin-top:0}
+.body p{margin:0 0 14px}
+.body ul,.body ol{margin:0 0 14px;padding-left:20px}
+.body li{margin:0 0 8px}
+/* full-width panels (Cash App media blocks) */
+.panel{grid-column:1/-1;border-radius:12px;padding:clamp(28px,4vw,56px);background:var(--ground)}
+.panel.dark{background:var(--ink);color:#fff}
+.panel.soft{background:var(--ground);color:var(--ink)}
+.panel.red{background:var(--red);color:#fff}
+.panel .gtb{font-weight:300;font-size:clamp(22px,2.6vw,36px);gap:14px 0;grid-template-columns:clamp(64px,7vw,104px) 1fr;margin:0;line-height:1.25;letter-spacing:-.01em}
+.panel.dark .gtb b{color:var(--red)}
+.panel .cap{margin:22px 0 0;font-size:14px;opacity:.7}
+.media{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.media > *{border-radius:12px;overflow:hidden;min-height:280px}
+.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:28px}
+.cards b{display:block;font-size:clamp(44px,5vw,72px);line-height:1;font-weight:300;color:var(--red);margin-bottom:14px}
+.cards .k{display:block;font-weight:500;font-size:17px;margin-bottom:6px}
+.cards span:not(.k){font-size:15px;line-height:1.45;opacity:.82}
+.levels.two{grid-template-columns:repeat(2,1fr)}
+.gtb-cards{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:8px}
+.gtb-cards > div{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px 22px 20px}
+.gtb-cards b{display:block;font-size:34px;line-height:1;font-weight:400;color:var(--red);margin-bottom:12px}
+.gtb-cards p{margin:0 0 12px;font-size:17px;line-height:1.45}
+.gtb-cards span{display:block;font-size:14px;color:var(--ink-3);line-height:1.4}
+.example{grid-column:1/-1;background:var(--ground);border-radius:12px;padding:22px 26px;margin-top:4px}
+.example .ex-label{margin:0 0 12px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+.example .gtb{font-size:19px;line-height:1.4;margin:0;grid-template-columns:64px 1fr;gap:8px 0}
+.example .cap{margin:14px 0 0;font-size:14px;color:var(--ink-3)}
+.tool-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 18px}
+.checks li.idle{color:var(--ink-3)}
+.big{font-weight:300;font-size:21px;line-height:1.45;letter-spacing:-.005em}
+.note{color:var(--ink-3);font-size:14px}
+.gtb{display:grid;grid-template-columns:56px 1fr;gap:10px 0;font-size:20px;line-height:1.4;margin:6px 0 20px}
+.gtb b{color:var(--red);font-weight:500}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0 18px}
+.levels div{background:var(--ground);padding:20px 20px 22px;border-radius:12px}
+.levels b{display:block;font-size:17px;margin-bottom:6px}
+.levels span{font-size:15px;color:var(--ink-2)}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:4px 0 16px}
+th{text-align:left;font-weight:500;font-size:13px;color:var(--ink-3);padding:0 16px 10px 0;border-bottom:1px solid var(--ink)}
+td{padding:12px 16px 12px 0;border-bottom:1px solid var(--line);vertical-align:top}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+/* field guide */
+.filter{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 4px}
+.filter button{border:0;background:var(--ground);padding:7px 14px;border-radius:999px;font-size:14px;cursor:pointer;color:var(--ink-2)}
+.filter button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.field{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px 40px;padding:30px 0;scroll-margin-top:24px}
+.field h3{font-size:19px;margin:0;line-height:1.3}
+.field .job{margin:0 0 16px;font-size:17px;text-wrap:balance}
+.wsw{display:grid;grid-template-columns:72px 1fr;gap:10px 0;font-size:15px}
+.wsw dt{color:var(--ink-3);font-size:13px;padding-top:2px}
+.wsw dd{margin:0}
+.wsw dd.weak{color:var(--ink-3);text-decoration:line-through;text-decoration-color:rgba(225,37,27,.55);text-decoration-thickness:1.5px}
+.wsw dd.strong{font-weight:500;color:var(--ink)}
+
+/* tools shared */
+.tool{background:var(--ground);border-radius:14px;padding:clamp(20px,3vw,36px);margin:8px 0 0}
+.tool-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:36px}
+.fld{display:block;margin:0 0 22px}
+.fld > span{display:flex;justify-content:space-between;font-size:14px;font-weight:500;margin-bottom:8px}
+.fld > span small{font-weight:400;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.fld textarea,.fld input[type=text],.fld input[type=date],.fld select{width:100%;background:var(--paper);border:1px solid transparent;border-radius:10px;padding:12px 14px;font-size:16px;line-height:1.45;resize:vertical}
+.fld textarea:focus,.fld input:focus,.fld select:focus{outline:none;border-color:var(--ink)}
+.checks{list-style:none;margin:0 0 20px;padding:0}
+.checks li{display:grid;grid-template-columns:24px 1fr;gap:10px;padding:9px 0;font-size:15px;line-height:1.4}
+.checks .ic{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:500;margin-top:-1px}
+.checks .ok .ic{background:var(--ink);color:#fff}
+.checks .no .ic{background:var(--paper);color:var(--red);box-shadow:inset 0 0 0 1.5px var(--red)}
+.checks .no{color:var(--ink)}
+.oneline{font-size:24px;line-height:1.3;letter-spacing:-.015em;font-weight:500;margin:0 0 16px;min-height:1.3em}
+.score{font-size:15px;color:var(--ink-2);margin:0 0 18px}
+.score b{font-size:40px;color:var(--ink);letter-spacing:-.03em;margin-right:6px;font-variant-numeric:tabular-nums}
+.btn{border:0;border-radius:999px;padding:10px 18px;background:var(--ink);color:#fff;font-size:14px;font-weight:500;cursor:pointer}
+.btn:hover{background:#000}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.ghost:hover{background:var(--paper)}
+.toast{font-size:14px;color:var(--ink-2);margin-left:12px}
+
+/* quiz */
+.qz{list-style:none;margin:0;padding:0;counter-reset:q}
+.qz li{padding:22px 0;border-top:1px solid var(--line)}
+.qz li:first-child{border-top:0;padding-top:0}
+.qz .s{font-size:17px;margin:0 0 12px;max-width:60ch}
+.seg{display:inline-flex;background:var(--paper);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;padding:8px 16px;border-radius:999px;font-size:14px;cursor:pointer;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.seg button.right[aria-pressed="true"]{background:var(--ink)}
+.seg button.wrong[aria-pressed="true"]{background:var(--red)}
+.qz .why{font-size:15px;color:var(--ink-2);margin:10px 0 0}
+.qz .why b{color:var(--ink)}
+
+/* timeline */
+.tl-inputs{display:grid;grid-template-columns:minmax(0,1.35fr) repeat(3,minmax(0,1fr));gap:0 18px}
+.tl-inputs .fld{margin-bottom:16px}
+.opts{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 6px;font-size:15px}
+.opts label{display:flex;gap:8px;align-items:center;cursor:pointer}
+.opts input,.rd input{appearance:none;-webkit-appearance:none;flex:none;width:20px;height:20px;margin:0;border:1.5px solid var(--ink-3);border-radius:5px;background:var(--paper);display:grid;place-items:center;cursor:pointer}
+.opts input:checked,.rd input:checked{background:var(--ink);border-color:var(--ink)}
+.opts input:checked::after,.rd input:checked::after{content:"";width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.opts input:focus-visible,.rd input:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.status{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;margin:26px 0 6px}
+.status .wk{font-size:clamp(40px,5vw,64px);font-weight:500;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.status .msg{font-size:17px;font-weight:500}
+.status .msg.late{color:var(--red)}
+.flags{list-style:none;margin:6px 0 0;padding:0;font-size:15px;color:var(--ink-2)}
+.flags li{padding:3px 0 3px 18px;position:relative}
+.flags li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;background:var(--red);border-radius:50%}
+.bar{position:relative;height:96px;margin:30px 6px 10px}
+.bar .axis{position:absolute;left:0;right:0;top:40px;height:4px;background:var(--line);border-radius:2px}
+.bar .run{position:absolute;top:40px;height:4px;background:var(--ink);border-radius:2px}
+.bar .pin{position:absolute;top:32px;width:2px;height:20px;background:var(--ink);transform:translateX(-1px)}
+.bar .pin.studio{background:var(--red)}
+.bar .pin.today{background:var(--red);top:22px;height:40px;width:2px}
+.bar .lab{position:absolute;font-size:13px;white-space:nowrap;transform:translateX(-50%);font-weight:500}
+.bar .lab.up{top:0}
+.bar .lab.dn{top:64px;font-weight:400;color:var(--ink-2)}
+.bar .lab.today{color:var(--red)}
+.steps{list-style:none;margin:12px 0 18px;padding:0}
+.steps li{display:grid;grid-template-columns:150px minmax(0,1fr);gap:4px 24px;padding:14px 0;border-top:1px solid rgba(0,0,0,.08)}
+.steps .when{font-variant-numeric:tabular-nums;font-size:15px}
+.steps .when.past{color:var(--red)}
+.steps .k{font-weight:500;font-size:15px}
+.steps .k i{font-style:normal;font-weight:400;color:var(--red);font-size:13px;margin-left:8px}
+.steps .nt{grid-column:2;color:var(--ink-2);font-size:14px}
+.levers{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:2px;margin:10px 0 12px}
+.levers div{background:var(--paper);padding:16px 16px 18px;font-size:14px;color:var(--ink-2)}
+.levers b{display:block;color:var(--ink);font-size:16px;margin-bottom:4px}
+
+/* ready */
+.meter{height:6px;background:var(--paper);border-radius:3px;overflow:hidden;margin:0 0 22px}
+.meter i{display:block;height:100%;background:var(--ink);transition:width .25s ease}
+.meter.done i{background:var(--red)}
+.rd{list-style:none;margin:0;padding:0;columns:2;column-gap:40px}
+.rd li{break-inside:avoid;padding:8px 0}
+.rd label{display:grid;grid-template-columns:22px 1fr;gap:12px;cursor:pointer;font-size:15px;line-height:1.4}
+
+.rd small{display:block;color:var(--ink-3);font-size:12px}
+
+/* examples */
+.brief{background:var(--paper);border-radius:14px;box-shadow:0 0 0 1px var(--line)}
+.brow{display:grid;grid-template-columns:200px minmax(0,1fr);gap:4px 28px;padding:18px 26px;border-top:1px solid var(--line);font-size:15px}
+.brow:first-child{border-top:0}
+.brow .k{font-weight:500}
+.brow .k small{display:block;font-weight:400;color:var(--ink-3);font-size:12px}
+.brow .v div{margin-bottom:4px}
+.score-n{font-variant-numeric:tabular-nums;font-weight:500}
+.prompt{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:14px;align-items:start;padding:16px 0;border-top:1px solid var(--line)}
+.prompt:first-child{border-top:0}
+.prompt .pn{color:var(--ink-3);font-size:14px;padding-top:2px;font-variant-numeric:tabular-nums}
+.prompt q{quotes:none;font-size:16px}
+.copy{border:0;background:var(--ground);border-radius:999px;padding:6px 14px;font-size:13px;cursor:pointer;white-space:nowrap}
+.copy:hover{background:var(--line)}
+.pending{background:var(--ground);border-radius:12px;padding:20px 22px;color:var(--ink-2);font-size:15px}
+.pending b{color:var(--ink)}
+.next{display:flex;justify-content:space-between;gap:20px;margin-top:56px;padding-top:28px;border-top:1px solid var(--ink)}
+.next a{text-decoration:none;font-size:15px;color:var(--ink-2)}
+.next a b{display:block;color:var(--ink);font-size:20px;letter-spacing:-.01em}
+.next a:hover b{color:var(--red)}
+.next a.fwd{text-align:right;margin-left:auto}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1080px){
+  .tool-grid{grid-template-columns:1fr}
+  .tl-inputs{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:900px){
+  .rail{transform:translateX(-100%);transition:transform .2s ease;z-index:30;width:min(88vw,320px);box-shadow:0 0 0 100vmax rgba(0,0,0,0)}
+  body.rail-open .rail{transform:none;box-shadow:0 0 0 100vmax rgba(29,29,29,.35)}
+  .topbar{display:flex;position:sticky;top:0;z-index:20;justify-content:space-between;align-items:center;background:var(--paper);padding:12px 18px;border-bottom:1px solid var(--line)}
+  .topbar button{border:0;background:var(--ground);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:500;cursor:pointer}
+  .pane{margin-left:0}
+  .chapter{padding:36px 20px 96px}
+  .ch-head,.sec,.field{grid-template-columns:1fr;gap:12px}
+  .ch-head{padding-bottom:32px}
+  .sec{padding:32px 0}
+  .levels{grid-template-columns:1fr}
+  .stats,.behaviors{grid-template-columns:1fr 1fr}
+  .tools3{grid-template-columns:1fr}
+  .gloss{grid-template-columns:1fr}
+  .gloss div{grid-template-columns:110px 1fr}
+  .gtb-cards,.check-steps,.chains,.stop-grid,.tline,.hold{grid-template-columns:1fr}
+  .tline::before{display:none}
+  .tline{padding-left:28px}
+  .tline::before{display:block;left:7px;right:auto;top:6px;bottom:6px;width:2px;height:auto}
+  .tline li{padding:0 0 22px}.tline li::before{top:2px;left:-28px}
+  .tline em{position:static;display:block;margin-bottom:4px}
+  .cards{grid-template-columns:1fr;gap:20px}
+  .cards > div{display:grid;grid-template-columns:52px 1fr;column-gap:12px}
+  .cards b{grid-row:span 2;font-size:48px;margin:0}
+  .bars > div{grid-template-columns:110px 1fr 70px}
+
+
+  .media{grid-template-columns:1fr}
+  .sec > .body{grid-column:auto!important}
+  .ch-head .sum{margin-top:0}
+  .rd{columns:1}
+  .brow{grid-template-columns:1fr;padding:16px 18px}
+  .steps li{grid-template-columns:1fr}
+  .steps .nt{grid-column:1}
+  .door-top nav{display:none}
+}
+@media (max-width:560px){
+  .tl-inputs{grid-template-columns:1fr}
+  .surface a{grid-template-columns:48px 1fr;padding-right:0}
+  .gtb{grid-template-columns:44px 1fr;font-size:18px}
+}
+@media print{.rail,.topbar,#door{display:none!important}.pane{margin:0}.chapter{display:block!important}}
+
+/* ---------- Styled dropdowns (replace native select popups) ---------- */
+.pick{position:relative;display:inline-block}
+.pick > select{position:absolute;inset:0;opacity:0;pointer-events:none;width:100%;height:100%}
+.pick-btn{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left;display:inline-flex;align-items:center;gap:.35em;white-space:nowrap}
+.pick-btn .chev{width:.42em;height:.42em;border-right:.08em solid currentColor;border-bottom:.08em solid currentColor;transform:translateY(-25%) rotate(45deg);transition:transform .15s;flex:none}
+.pick.open .pick-btn .chev{transform:translateY(15%) rotate(-135deg)}
+.pick-menu{position:absolute;top:calc(100% + 10px);left:0;z-index:60;min-width:260px;max-width:min(420px,90vw);background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 40px rgba(29,29,29,.14),0 2px 6px rgba(29,29,29,.06);padding:6px;list-style:none;margin:0;display:none;font-size:16px;line-height:1.35;letter-spacing:0;font-weight:400;color:var(--ink)}
+.pick.open .pick-menu{display:block;animation:pickIn .14s ease-out}
+@keyframes pickIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.pick-menu li{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 12px;border-radius:9px;cursor:pointer;white-space:nowrap}
+.pick-menu li:hover,.pick-menu li.act{background:var(--ground)}
+.pick-menu li[aria-selected="true"]{color:var(--red);font-weight:500}
+.pick-menu li[aria-selected="true"]::after{content:"";width:6px;height:11px;border-right:2px solid var(--red);border-bottom:2px solid var(--red);transform:rotate(45deg) translateY(-2px);flex:none}
+/* front door: inline red text with underline */
+.sentence .blank::after{display:none}
+.sentence .blank .pick-btn{color:var(--red);border-bottom:.07em solid var(--red);line-height:1.05;padding-bottom:.02em}
+.sentence .blank .pick-btn .chev{width:.24em;height:.24em;border-width:0 .055em .055em 0;margin-left:.12em}
+/* calculator fields */
+.fld .pick{display:block}
+.fld .pick-btn{width:100%;justify-content:space-between;background:var(--paper);border:1px solid transparent;border-radius:10px;padding:12px 14px;font-size:16px;line-height:1.45}
+.fld .pick-btn:focus-visible,.fld .pick.open .pick-btn{outline:none;border-color:var(--ink)}
+.fld .pick-btn .chev{width:7px;height:7px;border-width:0 1.5px 1.5px 0;color:var(--ink-3)}
+.fld .pick-btn > span:first-child{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.fld .pick-menu{width:max-content;min-width:100%;max-width:min(360px,90vw);top:calc(100% + 6px)}
+.fld .pick-menu li{padding:9px 12px}
+/* ---------- Date fields ---------- */
+.datef{position:relative;display:block}
+.datef > input[type=date]{position:absolute;inset:0;opacity:0;pointer-events:none;width:100%;height:100%}
+.date-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--paper);border:1px solid transparent;border-radius:10px;padding:12px 14px;font:inherit;font-size:16px;line-height:1.45;color:var(--ink);cursor:pointer;text-align:left}
+.date-btn:focus-visible{outline:none;border-color:var(--ink)}
+.date-btn svg{flex:none;color:var(--ink-3)}
+.date-btn:hover svg{color:var(--red)}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ============ FRONT DOOR ============ -->
+<section id="door" aria-label="Start">
+  <div class="door-top">
+    <a class="mark" href="#start"><img class="logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNTM2LjI3MyIgaGVpZ2h0PSIxODYuMjQyIiB2aWV3Qm94PSIwIDAgNTM2LjI3MyAxODYuMjQyIj4KPGRlZnM+CjxjbGlwUGF0aCBpZD0iY2xpcC0wIj4KPHBhdGggY2xpcC1ydWxlPSJub256ZXJvIiBkPSJNIDAuNzI2NTYyIDAgTCA1MzQuODI0MjE5IDAgTCA1MzQuODI0MjE5IDE4NS40ODgyODEgTCAwLjcyNjU2MiAxODUuNDg4MjgxIFogTSAwLjcyNjU2MiAwICIvPgo8L2NsaXBQYXRoPgo8Y2xpcFBhdGggaWQ9ImNsaXAtMSI+CjxwYXRoIGNsaXAtcnVsZT0ibm9uemVybyIgZD0iTSA1MTMgMTY0IEwgNTM0LjgyNDIxOSAxNjQgTCA1MzQuODI0MjE5IDE4NS40ODgyODEgTCA1MTMgMTg1LjQ4ODI4MSBaIE0gNTEzIDE2NCAiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcC0wKSI+CjxwYXRoIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0icmdiKDg4LjIzNTQ3NCUsIDE0LjkwMTczMyUsIDEwLjk4MDIyNSUpIiBmaWxsLW9wYWNpdHk9IjEiIGQ9Ik0gOTMuNDY4NzUgMTg1LjQ4ODI4MSBDIDQyLjI0NjA5NCAxODUuNDg4MjgxIDAuNzI2NTYyIDE0My45NjQ4NDQgMC43MjY1NjIgOTIuNzQyMTg4IEMgMC43MjY1NjIgNDEuNTIzNDM4IDQyLjI0NjA5NCAwIDkzLjQ2ODc1IDAgTCA0NDIuMDgyMDMxIDAgQyA0OTMuMzAwNzgxIDAgNTM0LjgyNDIxOSA0MS41MjM0MzggNTM0LjgyNDIxOSA5Mi43NDIxODggQyA1MzQuODI0MjE5IDE0My45NjQ4NDQgNDkzLjMwMDc4MSAxODUuNDg4MjgxIDQ0Mi4wODIwMzEgMTg1LjQ4ODI4MSBaIE0gOTMuNDY4NzUgMTg1LjQ4ODI4MSAiLz4KPC9nPgo8cGF0aCBmaWxsLXJ1bGU9Im5vbnplcm8iIGZpbGw9InJnYigxMDAlLCAxMDAlLCAxMDAlKSIgZmlsbC1vcGFjaXR5PSIxIiBkPSJNIDkzLjQ2ODc1IDE3My40ODQzNzUgQyA0OC44ODI4MTIgMTczLjQ4NDM3NSAxMi43NDIxODggMTM3LjM0Mzc1IDEyLjc0MjE4OCA5Mi43NTc4MTIgQyAxMi43NDIxODggNDguMTc1NzgxIDQ4Ljg4MjgxMiAxMi4wMzUxNTYgOTMuNDY4NzUgMTIuMDM1MTU2IEwgNDQyLjA4MjAzMSAxMi4wMzUxNTYgQyA0ODYuNjY0MDYyIDEyLjAzNTE1NiA1MjIuODA0Njg4IDQ4LjE3NTc4MSA1MjIuODA0Njg4IDkyLjc1NzgxMiBDIDUyMi44MDQ2ODggMTM3LjM0Mzc1IDQ4Ni42NjQwNjIgMTczLjQ4NDM3NSA0NDIuMDgyMDMxIDE3My40ODQzNzUgWiBNIDkzLjQ2ODc1IDE3My40ODQzNzUgIi8+CjxwYXRoIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0icmdiKDg4LjIzNTQ3NCUsIDE0LjkwMTczMyUsIDEwLjk4MDIyNSUpIiBmaWxsLW9wYWNpdHk9IjEiIGQ9Ik0gNDQzLjg1NTQ2OSAyNC4wMDc4MTIgTCA5MS42NjAxNTYgMjQuMDMxMjUgQyA1NC43MzgyODEgMjQuMDMxMjUgMjQuNzMwNDY5IDU0Ljg1MTU2MiAyNC43NjU2MjUgOTIuODIwMzEyIEMgMjQuNzY1NjI1IDEzMC41OTM3NSA1NC44MDA3ODEgMTYxLjQyMTg3NSA5MS42NjAxNTYgMTYxLjQyMTg3NSBMIDQ0My44NTU0NjkgMTYxLjM0NzY1NiBDIDQ4MC44MDg1OTQgMTYxLjMyMDMxMiA1MTAuNzM0Mzc1IDEzMC41ODIwMzEgNTEwLjc4OTA2MiA5Mi43NzczNDQgQyA1MTAuNzM0Mzc1IDU0LjczNDM3NSA0ODAuODA4NTk0IDI0LjAwNzgxMiA0NDMuODU1NDY5IDI0LjAwNzgxMiAiLz4KPHBhdGggZmlsbC1ydWxlPSJub256ZXJvIiBmaWxsPSJyZ2IoMTAwJSwgMTAwJSwgMTAwJSkiIGZpbGwtb3BhY2l0eT0iMSIgZD0iTSAyMjQuMDMxMjUgMTMxLjY5NTMxMiBMIDMxMS43NzM0MzggMTMxLjY5NTMxMiBMIDMxMi41MjczNDQgMTE4Ljc2MTcxOSBMIDI1Ni41NzQyMTkgMTE4Ljc2MTcxOSBMIDI1Ni41NzQyMTkgMTAzLjk4ODI4MSBMIDMwMS4yMDMxMjUgMTAzLjk4ODI4MSBMIDMwMS4yMDMxMjUgODguOTcyNjU2IEwgMjU2LjU3NDIxOSA4OC45NzI2NTYgTCAyNTYuNTc0MjE5IDcyLjk1MzEyNSBMIDMxNS4yNTM5MDYgNzIuOTQxNDA2IEwgMzE2LjM5ODQzOCA1My43MzQzNzUgTCAyMTkuMzk0NTMxIDUzLjczNDM3NSBaIE0gMjI0LjAzMTI1IDEzMS42OTUzMTIgIi8+CjxwYXRoIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0icmdiKDEwMCUsIDEwMCUsIDEwMCUpIiBmaWxsLW9wYWNpdHk9IjEiIGQ9Ik0gMTMyLjY0ODQzOCA1My43MzA0NjkgTCAxMzIuNjQ4NDM4IDg4Ljk3MjY1NiBMIDEwOC44ODY3MTkgODguOTcyNjU2IEwgMTA4Ljg4NjcxOSA1My43MzA0NjkgTCA3MS43MDcwMzEgNTMuNzMwNDY5IEwgNzYuMzM5ODQ0IDEzMS42OTUzMTIgTCAxMDguODg2NzE5IDEzMS42OTUzMTIgTCAxMDguODg2NzE5IDEwMy45ODgyODEgTCAxMzIuNjQ4NDM4IDEwMy45ODgyODEgTCAxMzIuNjQ4NDM4IDEzMS42OTUzMTIgTCAxNjUuMTkxNDA2IDEzMS42OTUzMTIgTCAxNjkuODI4MTI1IDUzLjczMDQ2OSBaIE0gMTMyLjY0ODQzOCA1My43MzA0NjkgIi8+CjxwYXRoIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0icmdiKDEwMCUsIDEwMCUsIDEwMCUpIiBmaWxsLW9wYWNpdHk9IjEiIGQ9Ik0gNDE3LjU4NTkzOCA4OC45NzI2NTYgTCA0MDIuODc1IDg4Ljk3MjY1NiBMIDQwMi44NzUgNzIuOTQ5MjE5IEwgNDE3LjA2NjQwNiA3Mi45NDkyMTkgQyA0MjQuODgyODEyIDcyLjk0OTIxOSA0MjkuMDUwNzgxIDc1LjQ0MTQwNiA0MjkuMDUwNzgxIDgxLjAyNzM0NCBDIDQyOS4wNTA3ODEgODYuMzYzMjgxIDQyNS4yNzM0MzggODguOTcyNjU2IDQxNy41ODU5MzggODguOTcyNjU2IE0gNDE2LjUyNzM0NCAxMTguNzU3ODEyIEwgNDAyLjg3NSAxMTguNzU3ODEyIEwgNDAyLjg3NSAxMDMuOTkyMTg4IEwgNDE2LjA0Njg3NSAxMDMuOTg4MjgxIEMgNDIzLjI1MzkwNiAxMDMuOTg4MjgxIDQyNy4wOTM3NSAxMDYuMjg1MTU2IDQyNy4wOTM3NSAxMTEuNDMzNTk0IEMgNDI3LjA5Mzc1IDExNi4zNTE1NjIgNDIzLjYxMzI4MSAxMTguNzU3ODEyIDQxNi41MjczNDQgMTE4Ljc1NzgxMiBNIDQ0Ny40Mjk2ODggOTYuNjI1IEMgNDU3LjI4OTA2MiA5My44MTI1IDQ2My44NTE1NjIgODguMDc0MjE5IDQ2My44NTE1NjIgNzYuMDM5MDYyIEMgNDYzLjg3NSA2Mi4yNjk1MzEgNDUyLjgzNTkzOCA1My43MzA0NjkgNDM4LjY2NDA2MiA1My43MzA0NjkgTCAzNjUuNjc1NzgxIDUzLjczMDQ2OSBMIDM3MC4zMTI1IDEzMS42OTkyMTkgTCA0MzQuMTA5Mzc1IDEzMS42OTkyMTkgQyA0NjEuOTgwNDY5IDEzMS42OTkyMTkgNDYwLjM5ODQzOCAxMTIuOTgwNDY5IDQ2MC4zOTg0MzggMTEyLjk4MDQ2OSBDIDQ2MC4zOTg0MzggMTA1LjA1MDc4MSA0NTUuMDg1OTM4IDk4LjQyNTc4MSA0NDcuNDI5Njg4IDk2LjYyNSAiLz4KPHBhdGggZmlsbC1ydWxlPSJub256ZXJvIiBmaWxsPSJyZ2IoMTAwJSwgMTAwJSwgMTAwJSkiIGZpbGwtb3BhY2l0eT0iMSIgZD0iTSAxODIuNzQ2MDk0IDg4Ljk3MjY1NiBMIDE4My42MzY3MTkgMTAzLjk5MjE4OCBMIDIwNS41ODIwMzEgMTAzLjk5MjE4OCBMIDIwNi40NzY1NjIgODguOTcyNjU2IFogTSAxODIuNzQ2MDk0IDg4Ljk3MjY1NiAiLz4KPHBhdGggZmlsbC1ydWxlPSJub256ZXJvIiBmaWxsPSJyZ2IoMTAwJSwgMTAwJSwgMTAwJSkiIGZpbGwtb3BhY2l0eT0iMSIgZD0iTSAzMjkuMDMxMjUgODguOTY4NzUgTCAzMjkuOTIxODc1IDEwMy45ODgyODEgTCAzNTEuODY3MTg4IDEwMy45ODgyODEgTCAzNTIuNzYxNzE5IDg4Ljk2ODc1IFogTSAzMjkuMDMxMjUgODguOTY4NzUgIi8+CjxwYXRoIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0icmdiKDg4LjIzNTQ3NCUsIDE0LjkwMTczMyUsIDEwLjk4MDIyNSUpIiBmaWxsLW9wYWNpdHk9IjEiIGQ9Ik0gNTIxLjY5MTQwNiAxNzMuOTc2NTYyIEwgNTIxLjY5MTQwNiAxNzAuMTM2NzE5IEwgNTI0LjI1IDE3MC4xMzY3MTkgQyA1MjUuNTU4NTk0IDE3MC4xMzY3MTkgNTI2Ljk1MzEyNSAxNzAuNDIxODc1IDUyNi45NTMxMjUgMTcxLjk1NzAzMSBDIDUyNi45NTMxMjUgMTczLjg2MzI4MSA1MjUuNTMxMjUgMTczLjk3NjU2MiA1MjMuOTM3NSAxNzMuOTc2NTYyIFogTSA1MjguOTE0MDYyIDE3Mi4wNzQyMTkgQyA1MjguOTE0MDYyIDE2OS42Mjg5MDYgNTI3LjQ2MDkzOCAxNjguNTQ2ODc1IDUyNC41MzUxNTYgMTY4LjU0Njg3NSBMIDUxOS44MTY0MDYgMTY4LjU0Njg3NSBMIDUxOS44MTY0MDYgMTgwLjkzNzUgTCA1MjEuNjkxNDA2IDE4MC45Mzc1IEwgNTIxLjY5MTQwNiAxNzUuNTcwMzEyIEwgNTIzLjg1MTU2MiAxNzUuNTcwMzEyIEwgNTI3LjEyMTA5NCAxODAuOTM3NSBMIDUyOS4yMjY1NjIgMTgwLjkzNzUgTCA1MjUuNjk5MjE5IDE3NS40ODQzNzUgQyA1MjcuNTE5NTMxIDE3NS4yNTc4MTIgNTI4LjkxNDA2MiAxNzQuMjkyOTY5IDUyOC45MTQwNjIgMTcyLjA3NDIxOSAiLz4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAtMSkiPgo8cGF0aCBmaWxsLXJ1bGU9Im5vbnplcm8iIGZpbGw9InJnYig4OC4yMzU0NzQlLCAxNC45MDE3MzMlLCAxMC45ODAyMjUlKSIgZmlsbC1vcGFjaXR5PSIxIiBkPSJNIDUyMy45NjQ4NDQgMTgzLjY5OTIxOSBDIDUxOS4wNTA3ODEgMTgzLjY5OTIxOSA1MTUuMjE0ODQ0IDE3OS44OTA2MjUgNTE1LjIxNDg0NCAxNzQuNzE4NzUgQyA1MTUuMjE0ODQ0IDE2OS42MjUgNTE5LjA1MDc4MSAxNjUuNzg5MDYyIDUyMy45NjQ4NDQgMTY1Ljc4OTA2MiBDIDUyOC44MjQyMTkgMTY1Ljc4OTA2MiA1MzIuNjY0MDYyIDE2OS42MjUgNTMyLjY2NDA2MiAxNzQuNzE4NzUgQyA1MzIuNjY0MDYyIDE3OS44OTA2MjUgNTI4LjgyNDIxOSAxODMuNjk5MjE5IDUyMy45NjQ4NDQgMTgzLjY5OTIxOSBNIDUyMy45NjQ4NDQgMTY0IEMgNTE4LjA1NDY4OCAxNjQgNTEzLjA1MDc4MSAxNjguNTQ2ODc1IDUxMy4wNTA3ODEgMTc0LjcxODc1IEMgNTEzLjA1MDc4MSAxODAuOTM3NSA1MTguMDU0Njg4IDE4NS40ODgyODEgNTIzLjk2NDg0NCAxODUuNDg4MjgxIEMgNTI5LjgyNDIxOSAxODUuNDg4MjgxIDUzNC44MjQyMTkgMTgwLjkzNzUgNTM0LjgyNDIxOSAxNzQuNzE4NzUgQyA1MzQuODI0MjE5IDE2OC41NDY4NzUgNTI5LjgyNDIxOSAxNjQgNTIzLjk2NDg0NCAxNjQgIi8+CjwvZz4KPC9zdmc+Cg==" alt="H-E-B" width="78" height="27"><b>Brief Builder</b><span>Creative brief training</span></a>
+    <nav aria-label="Quick links"><a href="#ch1">Chapters</a><a href="#ch5">Timeline calculator</a><a href="#ch6">Ready to send</a></nav>
+  </div>
+  <div class="door-main">
+    <h1 class="sentence">I'm
+      <span class="blank"><label class="vh" for="pickTask">What you're doing</label><select id="pickTask">
+        <option value="campaign">writing a campaign brief</option>
+        <option value="execution">writing an execution brief</option>
+        <option value="review">reviewing a brief</option>
+        <option value="concept">reviewing a concept</option>
+        <option value="shoot">planning a shoot</option>
+      </select></span>
+      as
+      <span class="nw"><span class="blank"><label class="vh" for="pickRole">Your role</label><select id="pickRole">
+        <option value="msm">an MSM</option>
+        <option value="lead">a creative lead</option>
+        <option value="cd">a creative director</option>
+        <option value="strat">the creative strategist</option>
+        <option value="studio">the studio</option>
+      </select></span>.</span>
+    </h1>
+    <p class="door-lede" id="doorLede">Start here. These are the rules and tools that matter most for what you're doing. Every one is numbered, so you can point to it in a comment.</p>
+    <ol class="surface" id="surface" aria-live="polite"></ol>
+  </div>
+  <div class="door-foot">
+    <span>Built from the LPA creative brief training and the studio's timelines. Draft for internal review.</span>
+    <a href="#ch1">Read it from the start</a>
+  </div>
+</section>
+
+<!-- ============ BOOK ============ -->
+<div id="book">
+  <div class="topbar">
+    <a class="mark" href="#start"><img class="logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNTM2LjI3MyIgaGVpZ2h0PSIxODYuMjQyIiB2aWV3Qm94PSIwIDAgNTM2LjI3MyAxODYuMjQyIj4KPGRlZnM+CjxjbGlwUGF0aCBpZD0iY2xpcC0wIj4KPHBhdGggY2xpcC1ydWxlPSJub256ZXJvIiBkPSJNIDAuNzI2NTYyIDAgTCA1MzQuODI0MjE5IDAgTCA1MzQuODI0MjE5IDE4NS40ODgyODEgTCAwLjcyNjU2MiAxODUuNDg4MjgxIFogTSAwLjcyNjU2MiAwICIvPgo8L2NsaXBQYXRoPgo8Y2xpcFBhdGggaWQ9ImNsaXAtMSI+CjxwYXRoIGNsaXAtcnVsZT0ibm9uemVybyIgZD0iTSA1MTMgMTY0IEwgNTM0LjgyNDIxOSAxNjQgTCA1MzQuODI0MjE5IDE4NS40ODgyODEgTCA1MTMgMTg1LjQ4ODI4MSBaIE0gNTEzIDE2NCAiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcC0wKSI+CjxwYXRoIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0icmdiKDg4LjIzNTQ3NCUsIDE0LjkwMTczMyUsIDEwLjk4MDIyNSUpIiBmaWxsLW9wYWNpdHk9IjEiIGQ9Ik0gOTMuNDY4NzUgMTg1LjQ4ODI4MSBDIDQyLjI0NjA5NCAxODUuNDg4MjgxIDAuNzI2NTYyIDE0My45NjQ4NDQgMC43MjY1NjIgOTIuNzQyMTg4IEMgMC43MjY1NjIgNDEuNTIzNDM4IDQyLjI0NjA5NCAwIDkzLjQ2ODc1IDAgTCA0NDIuMDgyMDMxIDAgQyA0OTMuMzAwNzgxIDAgNTM0LjgyNDIxOSA0MS41MjM0MzggNTM0LjgyNDIxOSA5Mi43NDIxODggQyA1MzQuODI0MjE5IDE0My45NjQ4NDQgNDkzLjMwMDc4MSAxODUuNDg4MjgxIDQ0Mi4wODIwMzEgMTg1LjQ4ODI4MSBaIE0gOTMuNDY4NzUgMTg1LjQ4ODI4MSAiLz4KPC9nPgo8cGF0aCBmaWxsLXJ1bGU9Im5vbnplcm8iIGZpbGw9InJnYigxMDAlLCAxMDAlLCAxMDAlKSIgZmlsbC1vcGFjaXR5PSIxIiBkPSJNIDkzLjQ2ODc1IDE3My40ODQzNzUgQyA0OC44ODI4MTIgMTczLjQ4NDM3NSAxMi43NDIxODggMTM3LjM0Mzc1IDEyLjc0MjE4OCA5Mi43NTc4MTIgQyAxMi43NDIxODggNDguMTc1NzgxIDQ4Ljg4MjgxMiAxMi4wMzUxNTYgOTMuNDY4NzUgMTIuMDM1MTU2IEwgNDQyLjA4MjAzMSAxMi4wMzUxNTYgQyA0ODYuNjY0MDYyIDEyLjAzNTE1NiA1MjIuODA0Njg4IDQ4LjE3NTc4MSA1MjIuODA0Njg4IDkyLjc1NzgxMiBDIDUyMi44MDQ2ODggMTM3LjM0Mzc1IDQ4Ni42NjQwNjIgMTczLjQ4NDM3NSA0NDIuMDgyMDMxIDE3My40ODQzNzUgWiBNIDkzLjQ2ODc1IDE3My40ODQzNzUgIi8+CjxwYXRoIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0icmdiKDg4LjIzNTQ3NCUsIDE0LjkwMTczMyUsIDEwLjk4MDIyNSUpIiBmaWxsLW9wYWNpdHk9IjEiIGQ9Ik0gNDQzLjg1NTQ2OSAyNC4wMDc4MTIgTCA5MS42NjAxNTYgMjQuMDMxMjUgQyA1NC43MzgyODEgMjQuMDMxMjUgMjQuNzMwNDY5IDU0Ljg1MTU2MiAyNC43NjU2MjUgOTIuODIwMzEyIEMgMjQuNzY1NjI1IDEzMC41OTM3NSA1NC44MDA3ODEgMTYxLjQyMTg3NSA5MS42NjAxNTYgMTYxLjQyMTg3NSBMIDQ0My44NTU0NjkgMTYxLjM0NzY1NiBDIDQ4MC44MDg1OTQgMTYxLjMyMDMxMiA1MTAuNzM0Mzc1IDEzMC41ODIwMzEgNTEwLjc4OTA2MiA5Mi43NzczNDQgQyA1MTAuNzM0Mzc1IDU0LjczNDM3NSA0ODAuODA4NTk0IDI0LjAwNzgxMiA0NDMuODU1NDY5IDI0LjAwNzgxMiAiLz4KPHBhdGggZmlsbC1ydWxlPSJub256ZXJvIiBmaWxsPSJyZ2IoMTAwJSwgMTAwJSwgMTAwJSkiIGZpbGwtb3BhY2l0eT0iMSIgZD0iTSAyMjQuMDMxMjUgMTMxLjY5NTMxMiBMIDMxMS43NzM0MzggMTMxLjY5NTMxMiBMIDMxMi41MjczNDQgMTE4Ljc2MTcxOSBMIDI1Ni41NzQyMTkgMTE4Ljc2MTcxOSBMIDI1Ni41NzQyMTkgMTAzLjk4ODI4MSBMIDMwMS4yMDMxMjUgMTAzLjk4ODI4MSBMIDMwMS4yMDMxMjUgODguOTcyNjU2IEwgMjU2LjU3NDIxOSA4OC45NzI2NTYgTCAyNTYuNTc0MjE5IDcyLjk1MzEyNSBMIDMxNS4yNTM5MDYgNzIuOTQxNDA2IEwgMzE2LjM5ODQzOCA1My43MzQzNzUgTCAyMTkuMzk0NTMxIDUzLjczNDM3NSBaIE0gMjI0LjAzMTI1IDEzMS42OTUzMTIgIi8+CjxwYXRoIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0icmdiKDEwMCUsIDEwMCUsIDEwMCUpIiBmaWxsLW9wYWNpdHk9IjEiIGQ9Ik0gMTMyLjY0ODQzOCA1My43MzA0NjkgTCAxMzIuNjQ4NDM4IDg4Ljk3MjY1NiBMIDEwOC44ODY3MTkgODguOTcyNjU2IEwgMTA4Ljg4NjcxOSA1My43MzA0NjkgTCA3MS43MDcwMzEgNTMuNzMwNDY5IEwgNzYuMzM5ODQ0IDEzMS42OTUzMTIgTCAxMDguODg2NzE5IDEzMS42OTUzMTIgTCAxMDguODg2NzE5IDEwMy45ODgyODEgTCAxMzIuNjQ4NDM4IDEwMy45ODgyODEgTCAxMzIuNjQ4NDM4IDEzMS42OTUzMTIgTCAxNjUuMTkxNDA2IDEzMS42OTUzMTIgTCAxNjkuODI4MTI1IDUzLjczMDQ2OSBaIE0gMTMyLjY0ODQzOCA1My43MzA0NjkgIi8+CjxwYXRoIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0icmdiKDEwMCUsIDEwMCUsIDEwMCUpIiBmaWxsLW9wYWNpdHk9IjEiIGQ9Ik0gNDE3LjU4NTkzOCA4OC45NzI2NTYgTCA0MDIuODc1IDg4Ljk3MjY1NiBMIDQwMi44NzUgNzIuOTQ5MjE5IEwgNDE3LjA2NjQwNiA3Mi45NDkyMTkgQyA0MjQuODgyODEyIDcyLjk0OTIxOSA0MjkuMDUwNzgxIDc1LjQ0MTQwNiA0MjkuMDUwNzgxIDgxLjAyNzM0NCBDIDQyOS4wNTA3ODEgODYuMzYzMjgxIDQyNS4yNzM0MzggODguOTcyNjU2IDQxNy41ODU5MzggODguOTcyNjU2IE0gNDE2LjUyNzM0NCAxMTguNzU3ODEyIEwgNDAyLjg3NSAxMTguNzU3ODEyIEwgNDAyLjg3NSAxMDMuOTkyMTg4IEwgNDE2LjA0Njg3NSAxMDMuOTg4MjgxIEMgNDIzLjI1MzkwNiAxMDMuOTg4MjgxIDQyNy4wOTM3NSAxMDYuMjg1MTU2IDQyNy4wOTM3NSAxMTEuNDMzNTk0IEMgNDI3LjA5Mzc1IDExNi4zNTE1NjIgNDIzLjYxMzI4MSAxMTguNzU3ODEyIDQxNi41MjczNDQgMTE4Ljc1NzgxMiBNIDQ0Ny40Mjk2ODggOTYuNjI1IEMgNDU3LjI4OTA2MiA5My44MTI1IDQ2My44NTE1NjIgODguMDc0MjE5IDQ2My44NTE1NjIgNzYuMDM5MDYyIEMgNDYzLjg3NSA2Mi4yNjk1MzEgNDUyLjgzNTkzOCA1My43MzA0NjkgNDM4LjY2NDA2MiA1My43MzA0NjkgTCAzNjUuNjc1NzgxIDUzLjczMDQ2OSBMIDM3MC4zMTI1IDEzMS42OTkyMTkgTCA0MzQuMTA5Mzc1IDEzMS42OTkyMTkgQyA0NjEuOTgwNDY5IDEzMS42OTkyMTkgNDYwLjM5ODQzOCAxMTIuOTgwNDY5IDQ2MC4zOTg0MzggMTEyLjk4MDQ2OSBDIDQ2MC4zOTg0MzggMTA1LjA1MDc4MSA0NTUuMDg1OTM4IDk4LjQyNTc4MSA0NDcuNDI5Njg4IDk2LjYyNSAiLz4KPHBhdGggZmlsbC1ydWxlPSJub256ZXJvIiBmaWxsPSJyZ2IoMTAwJSwgMTAwJSwgMTAwJSkiIGZpbGwtb3BhY2l0eT0iMSIgZD0iTSAxODIuNzQ2MDk0IDg4Ljk3MjY1NiBMIDE4My42MzY3MTkgMTAzLjk5MjE4OCBMIDIwNS41ODIwMzEgMTAzLjk5MjE4OCBMIDIwNi40NzY1NjIgODguOTcyNjU2IFogTSAxODIuNzQ2MDk0IDg4Ljk3MjY1NiAiLz4KPHBhdGggZmlsbC1ydWxlPSJub256ZXJvIiBmaWxsPSJyZ2IoMTAwJSwgMTAwJSwgMTAwJSkiIGZpbGwtb3BhY2l0eT0iMSIgZD0iTSAzMjkuMDMxMjUgODguOTY4NzUgTCAzMjkuOTIxODc1IDEwMy45ODgyODEgTCAzNTEuODY3MTg4IDEwMy45ODgyODEgTCAzNTIuNzYxNzE5IDg4Ljk2ODc1IFogTSAzMjkuMDMxMjUgODguOTY4NzUgIi8+CjxwYXRoIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0icmdiKDg4LjIzNTQ3NCUsIDE0LjkwMTczMyUsIDEwLjk4MDIyNSUpIiBmaWxsLW9wYWNpdHk9IjEiIGQ9Ik0gNTIxLjY5MTQwNiAxNzMuOTc2NTYyIEwgNTIxLjY5MTQwNiAxNzAuMTM2NzE5IEwgNTI0LjI1IDE3MC4xMzY3MTkgQyA1MjUuNTU4NTk0IDE3MC4xMzY3MTkgNTI2Ljk1MzEyNSAxNzAuNDIxODc1IDUyNi45NTMxMjUgMTcxLjk1NzAzMSBDIDUyNi45NTMxMjUgMTczLjg2MzI4MSA1MjUuNTMxMjUgMTczLjk3NjU2MiA1MjMuOTM3NSAxNzMuOTc2NTYyIFogTSA1MjguOTE0MDYyIDE3Mi4wNzQyMTkgQyA1MjguOTE0MDYyIDE2OS42Mjg5MDYgNTI3LjQ2MDkzOCAxNjguNTQ2ODc1IDUyNC41MzUxNTYgMTY4LjU0Njg3NSBMIDUxOS44MTY0MDYgMTY4LjU0Njg3NSBMIDUxOS44MTY0MDYgMTgwLjkzNzUgTCA1MjEuNjkxNDA2IDE4MC45Mzc1IEwgNTIxLjY5MTQwNiAxNzUuNTcwMzEyIEwgNTIzLjg1MTU2MiAxNzUuNTcwMzEyIEwgNTI3LjEyMTA5NCAxODAuOTM3NSBMIDUyOS4yMjY1NjIgMTgwLjkzNzUgTCA1MjUuNjk5MjE5IDE3NS40ODQzNzUgQyA1MjcuNTE5NTMxIDE3NS4yNTc4MTIgNTI4LjkxNDA2MiAxNzQuMjkyOTY5IDUyOC45MTQwNjIgMTcyLjA3NDIxOSAiLz4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAtMSkiPgo8cGF0aCBmaWxsLXJ1bGU9Im5vbnplcm8iIGZpbGw9InJnYig4OC4yMzU0NzQlLCAxNC45MDE3MzMlLCAxMC45ODAyMjUlKSIgZmlsbC1vcGFjaXR5PSIxIiBkPSJNIDUyMy45NjQ4NDQgMTgzLjY5OTIxOSBDIDUxOS4wNTA3ODEgMTgzLjY5OTIxOSA1MTUuMjE0ODQ0IDE3OS44OTA2MjUgNTE1LjIxNDg0NCAxNzQuNzE4NzUgQyA1MTUuMjE0ODQ0IDE2OS42MjUgNTE5LjA1MDc4MSAxNjUuNzg5MDYyIDUyMy45NjQ4NDQgMTY1Ljc4OTA2MiBDIDUyOC44MjQyMTkgMTY1Ljc4OTA2MiA1MzIuNjY0MDYyIDE2OS42MjUgNTMyLjY2NDA2MiAxNzQuNzE4NzUgQyA1MzIuNjY0MDYyIDE3OS44OTA2MjUgNTI4LjgyNDIxOSAxODMuNjk5MjE5IDUyMy45NjQ4NDQgMTgzLjY5OTIxOSBNIDUyMy45NjQ4NDQgMTY0IEMgNTE4LjA1NDY4OCAxNjQgNTEzLjA1MDc4MSAxNjguNTQ2ODc1IDUxMy4wNTA3ODEgMTc0LjcxODc1IEMgNTEzLjA1MDc4MSAxODAuOTM3NSA1MTguMDU0Njg4IDE4NS40ODgyODEgNTIzLjk2NDg0NCAxODUuNDg4MjgxIEMgNTI5LjgyNDIxOSAxODUuNDg4MjgxIDUzNC44MjQyMTkgMTgwLjkzNzUgNTM0LjgyNDIxOSAxNzQuNzE4NzUgQyA1MzQuODI0MjE5IDE2OC41NDY4NzUgNTI5LjgyNDIxOSAxNjQgNTIzLjk2NDg0NCAxNjQgIi8+CjwvZz4KPC9zdmc+Cg==" alt="H-E-B" width="78" height="27"><b>Brief Builder</b></a>
+    <button type="button" id="railBtn" aria-controls="rail" aria-expanded="false">Chapters</button>
+  </div>
+  <aside class="rail" id="rail" aria-label="Chapters">
+    <a class="mark" href="#start"><img class="logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNTM2LjI3MyIgaGVpZ2h0PSIxODYuMjQyIiB2aWV3Qm94PSIwIDAgNTM2LjI3MyAxODYuMjQyIj4KPGRlZnM+CjxjbGlwUGF0aCBpZD0iY2xpcC0wIj4KPHBhdGggY2xpcC1ydWxlPSJub256ZXJvIiBkPSJNIDAuNzI2NTYyIDAgTCA1MzQuODI0MjE5IDAgTCA1MzQuODI0MjE5IDE4NS40ODgyODEgTCAwLjcyNjU2MiAxODUuNDg4MjgxIFogTSAwLjcyNjU2MiAwICIvPgo8L2NsaXBQYXRoPgo8Y2xpcFBhdGggaWQ9ImNsaXAtMSI+CjxwYXRoIGNsaXAtcnVsZT0ibm9uemVybyIgZD0iTSA1MTMgMTY0IEwgNTM0LjgyNDIxOSAxNjQgTCA1MzQuODI0MjE5IDE4NS40ODgyODEgTCA1MTMgMTg1LjQ4ODI4MSBaIE0gNTEzIDE2NCAiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcC0wKSI+CjxwYXRoIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0icmdiKDg4LjIzNTQ3NCUsIDE0LjkwMTczMyUsIDEwLjk4MDIyNSUpIiBmaWxsLW9wYWNpdHk9IjEiIGQ9Ik0gOTMuNDY4NzUgMTg1LjQ4ODI4MSBDIDQyLjI0NjA5NCAxODUuNDg4MjgxIDAuNzI2NTYyIDE0My45NjQ4NDQgMC43MjY1NjIgOTIuNzQyMTg4IEMgMC43MjY1NjIgNDEuNTIzNDM4IDQyLjI0NjA5NCAwIDkzLjQ2ODc1IDAgTCA0NDIuMDgyMDMxIDAgQyA0OTMuMzAwNzgxIDAgNTM0LjgyNDIxOSA0MS41MjM0MzggNTM0LjgyNDIxOSA5Mi43NDIxODggQyA1MzQuODI0MjE5IDE0My45NjQ4NDQgNDkzLjMwMDc4MSAxODUuNDg4MjgxIDQ0Mi4wODIwMzEgMTg1LjQ4ODI4MSBaIE0gOTMuNDY4NzUgMTg1LjQ4ODI4MSAiLz4KPC9nPgo8cGF0aCBmaWxsLXJ1bGU9Im5vbnplcm8iIGZpbGw9InJnYigxMDAlLCAxMDAlLCAxMDAlKSIgZmlsbC1vcGFjaXR5PSIxIiBkPSJNIDkzLjQ2ODc1IDE3My40ODQzNzUgQyA0OC44ODI4MTIgMTczLjQ4NDM3NSAxMi43NDIxODggMTM3LjM0Mzc1IDEyLjc0MjE4OCA5Mi43NTc4MTIgQyAxMi43NDIxODggNDguMTc1NzgxIDQ4Ljg4MjgxMiAxMi4wMzUxNTYgOTMuNDY4NzUgMTIuMDM1MTU2IEwgNDQyLjA4MjAzMSAxMi4wMzUxNTYgQyA0ODYuNjY0MDYyIDEyLjAzNTE1NiA1MjIuODA0Njg4IDQ4LjE3NTc4MSA1MjIuODA0Njg4IDkyLjc1NzgxMiBDIDUyMi44MDQ2ODggMTM3LjM0Mzc1IDQ4Ni42NjQwNjIgMTczLjQ4NDM3NSA0NDIuMDgyMDMxIDE3My40ODQzNzUgWiBNIDkzLjQ2ODc1IDE3My40ODQzNzUgIi8+CjxwYXRoIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0icmdiKDg4LjIzNTQ3NCUsIDE0LjkwMTczMyUsIDEwLjk4MDIyNSUpIiBmaWxsLW9wYWNpdHk9IjEiIGQ9Ik0gNDQzLjg1NTQ2OSAyNC4wMDc4MTIgTCA5MS42NjAxNTYgMjQuMDMxMjUgQyA1NC43MzgyODEgMjQuMDMxMjUgMjQuNzMwNDY5IDU0Ljg1MTU2MiAyNC43NjU2MjUgOTIuODIwMzEyIEMgMjQuNzY1NjI1IDEzMC41OTM3NSA1NC44MDA3ODEgMTYxLjQyMTg3NSA5MS42NjAxNTYgMTYxLjQyMTg3NSBMIDQ0My44NTU0NjkgMTYxLjM0NzY1NiBDIDQ4MC44MDg1OTQgMTYxLjMyMDMxMiA1MTAuNzM0Mzc1IDEzMC41ODIwMzEgNTEwLjc4OTA2MiA5Mi43NzczNDQgQyA1MTAuNzM0Mzc1IDU0LjczNDM3NSA0ODAuODA4NTk0IDI0LjAwNzgxMiA0NDMuODU1NDY5IDI0LjAwNzgxMiAiLz4KPHBhdGggZmlsbC1ydWxlPSJub256ZXJvIiBmaWxsPSJyZ2IoMTAwJSwgMTAwJSwgMTAwJSkiIGZpbGwtb3BhY2l0eT0iMSIgZD0iTSAyMjQuMDMxMjUgMTMxLjY5NTMxMiBMIDMxMS43NzM0MzggMTMxLjY5NTMxMiBMIDMxMi41MjczNDQgMTE4Ljc2MTcxOSBMIDI1Ni41NzQyMTkgMTE4Ljc2MTcxOSBMIDI1Ni41NzQyMTkgMTAzLjk4ODI4MSBMIDMwMS4yMDMxMjUgMTAzLjk4ODI4MSBMIDMwMS4yMDMxMjUgODguOTcyNjU2IEwgMjU2LjU3NDIxOSA4OC45NzI2NTYgTCAyNTYuNTc0MjE5IDcyLjk1MzEyNSBMIDMxNS4yNTM5MDYgNzIuOTQxNDA2IEwgMzE2LjM5ODQzOCA1My43MzQzNzUgTCAyMTkuMzk0NTMxIDUzLjczNDM3NSBaIE0gMjI0LjAzMTI1IDEzMS42OTUzMTIgIi8+CjxwYXRoIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0icmdiKDEwMCUsIDEwMCUsIDEwMCUpIiBmaWxsLW9wYWNpdHk9IjEiIGQ9Ik0gMTMyLjY0ODQzOCA1My43MzA0NjkgTCAxMzIuNjQ4NDM4IDg4Ljk3MjY1NiBMIDEwOC44ODY3MTkgODguOTcyNjU2IEwgMTA4Ljg4NjcxOSA1My43MzA0NjkgTCA3MS43MDcwMzEgNTMuNzMwNDY5IEwgNzYuMzM5ODQ0IDEzMS42OTUzMTIgTCAxMDguODg2NzE5IDEzMS42OTUzMTIgTCAxMDguODg2NzE5IDEwMy45ODgyODEgTCAxMzIuNjQ4NDM4IDEwMy45ODgyODEgTCAxMzIuNjQ4NDM4IDEzMS42OTUzMTIgTCAxNjUuMTkxNDA2IDEzMS42OTUzMTIgTCAxNjkuODI4MTI1IDUzLjczMDQ2OSBaIE0gMTMyLjY0ODQzOCA1My43MzA0NjkgIi8+CjxwYXRoIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0icmdiKDEwMCUsIDEwMCUsIDEwMCUpIiBmaWxsLW9wYWNpdHk9IjEiIGQ9Ik0gNDE3LjU4NTkzOCA4OC45NzI2NTYgTCA0MDIuODc1IDg4Ljk3MjY1NiBMIDQwMi44NzUgNzIuOTQ5MjE5IEwgNDE3LjA2NjQwNiA3Mi45NDkyMTkgQyA0MjQuODgyODEyIDcyLjk0OTIxOSA0MjkuMDUwNzgxIDc1LjQ0MTQwNiA0MjkuMDUwNzgxIDgxLjAyNzM0NCBDIDQyOS4wNTA3ODEgODYuMzYzMjgxIDQyNS4yNzM0MzggODguOTcyNjU2IDQxNy41ODU5MzggODguOTcyNjU2IE0gNDE2LjUyNzM0NCAxMTguNzU3ODEyIEwgNDAyLjg3NSAxMTguNzU3ODEyIEwgNDAyLjg3NSAxMDMuOTkyMTg4IEwgNDE2LjA0Njg3NSAxMDMuOTg4MjgxIEMgNDIzLjI1MzkwNiAxMDMuOTg4MjgxIDQyNy4wOTM3NSAxMDYuMjg1MTU2IDQyNy4wOTM3NSAxMTEuNDMzNTk0IEMgNDI3LjA5Mzc1IDExNi4zNTE1NjIgNDIzLjYxMzI4MSAxMTguNzU3ODEyIDQxNi41MjczNDQgMTE4Ljc1NzgxMiBNIDQ0Ny40Mjk2ODggOTYuNjI1IEMgNDU3LjI4OTA2MiA5My44MTI1IDQ2My44NTE1NjIgODguMDc0MjE5IDQ2My44NTE1NjIgNzYuMDM5MDYyIEMgNDYzLjg3NSA2Mi4yNjk1MzEgNDUyLjgzNTkzOCA1My43MzA0NjkgNDM4LjY2NDA2MiA1My43MzA0NjkgTCAzNjUuNjc1NzgxIDUzLjczMDQ2OSBMIDM3MC4zMTI1IDEzMS42OTkyMTkgTCA0MzQuMTA5Mzc1IDEzMS42OTkyMTkgQyA0NjEuOTgwNDY5IDEzMS42OTkyMTkgNDYwLjM5ODQzOCAxMTIuOTgwNDY5IDQ2MC4zOTg0MzggMTEyLjk4MDQ2OSBDIDQ2MC4zOTg0MzggMTA1LjA1MDc4MSA0NTUuMDg1OTM4IDk4LjQyNTc4MSA0NDcuNDI5Njg4IDk2LjYyNSAiLz4KPHBhdGggZmlsbC1ydWxlPSJub256ZXJvIiBmaWxsPSJyZ2IoMTAwJSwgMTAwJSwgMTAwJSkiIGZpbGwtb3BhY2l0eT0iMSIgZD0iTSAxODIuNzQ2MDk0IDg4Ljk3MjY1NiBMIDE4My42MzY3MTkgMTAzLjk5MjE4OCBMIDIwNS41ODIwMzEgMTAzLjk5MjE4OCBMIDIwNi40NzY1NjIgODguOTcyNjU2IFogTSAxODIuNzQ2MDk0IDg4Ljk3MjY1NiAiLz4KPHBhdGggZmlsbC1ydWxlPSJub256ZXJvIiBmaWxsPSJyZ2IoMTAwJSwgMTAwJSwgMTAwJSkiIGZpbGwtb3BhY2l0eT0iMSIgZD0iTSAzMjkuMDMxMjUgODguOTY4NzUgTCAzMjkuOTIxODc1IDEwMy45ODgyODEgTCAzNTEuODY3MTg4IDEwMy45ODgyODEgTCAzNTIuNzYxNzE5IDg4Ljk2ODc1IFogTSAzMjkuMDMxMjUgODguOTY4NzUgIi8+CjxwYXRoIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0icmdiKDg4LjIzNTQ3NCUsIDE0LjkwMTczMyUsIDEwLjk4MDIyNSUpIiBmaWxsLW9wYWNpdHk9IjEiIGQ9Ik0gNTIxLjY5MTQwNiAxNzMuOTc2NTYyIEwgNTIxLjY5MTQwNiAxNzAuMTM2NzE5IEwgNTI0LjI1IDE3MC4xMzY3MTkgQyA1MjUuNTU4NTk0IDE3MC4xMzY3MTkgNTI2Ljk1MzEyNSAxNzAuNDIxODc1IDUyNi45NTMxMjUgMTcxLjk1NzAzMSBDIDUyNi45NTMxMjUgMTczLjg2MzI4MSA1MjUuNTMxMjUgMTczLjk3NjU2MiA1MjMuOTM3NSAxNzMuOTc2NTYyIFogTSA1MjguOTE0MDYyIDE3Mi4wNzQyMTkgQyA1MjguOTE0MDYyIDE2OS42Mjg5MDYgNTI3LjQ2MDkzOCAxNjguNTQ2ODc1IDUyNC41MzUxNTYgMTY4LjU0Njg3NSBMIDUxOS44MTY0MDYgMTY4LjU0Njg3NSBMIDUxOS44MTY0MDYgMTgwLjkzNzUgTCA1MjEuNjkxNDA2IDE4MC45Mzc1IEwgNTIxLjY5MTQwNiAxNzUuNTcwMzEyIEwgNTIzLjg1MTU2MiAxNzUuNTcwMzEyIEwgNTI3LjEyMTA5NCAxODAuOTM3NSBMIDUyOS4yMjY1NjIgMTgwLjkzNzUgTCA1MjUuNjk5MjE5IDE3NS40ODQzNzUgQyA1MjcuNTE5NTMxIDE3NS4yNTc4MTIgNTI4LjkxNDA2MiAxNzQuMjkyOTY5IDUyOC45MTQwNjIgMTcyLjA3NDIxOSAiLz4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAtMSkiPgo8cGF0aCBmaWxsLXJ1bGU9Im5vbnplcm8iIGZpbGw9InJnYig4OC4yMzU0NzQlLCAxNC45MDE3MzMlLCAxMC45ODAyMjUlKSIgZmlsbC1vcGFjaXR5PSIxIiBkPSJNIDUyMy45NjQ4NDQgMTgzLjY5OTIxOSBDIDUxOS4wNTA3ODEgMTgzLjY5OTIxOSA1MTUuMjE0ODQ0IDE3OS44OTA2MjUgNTE1LjIxNDg0NCAxNzQuNzE4NzUgQyA1MTUuMjE0ODQ0IDE2OS42MjUgNTE5LjA1MDc4MSAxNjUuNzg5MDYyIDUyMy45NjQ4NDQgMTY1Ljc4OTA2MiBDIDUyOC44MjQyMTkgMTY1Ljc4OTA2MiA1MzIuNjY0MDYyIDE2OS42MjUgNTMyLjY2NDA2MiAxNzQuNzE4NzUgQyA1MzIuNjY0MDYyIDE3OS44OTA2MjUgNTI4LjgyNDIxOSAxODMuNjk5MjE5IDUyMy45NjQ4NDQgMTgzLjY5OTIxOSBNIDUyMy45NjQ4NDQgMTY0IEMgNTE4LjA1NDY4OCAxNjQgNTEzLjA1MDc4MSAxNjguNTQ2ODc1IDUxMy4wNTA3ODEgMTc0LjcxODc1IEMgNTEzLjA1MDc4MSAxODAuOTM3NSA1MTguMDU0Njg4IDE4NS40ODgyODEgNTIzLjk2NDg0NCAxODUuNDg4MjgxIEMgNTI5LjgyNDIxOSAxODUuNDg4MjgxIDUzNC44MjQyMTkgMTgwLjkzNzUgNTM0LjgyNDIxOSAxNzQuNzE4NzUgQyA1MzQuODI0MjE5IDE2OC41NDY4NzUgNTI5LjgyNDIxOSAxNjQgNTIzLjk2NDg0NCAxNjQgIi8+CjwvZz4KPC9zdmc+Cg==" alt="H-E-B" width="78" height="27"><b>Brief Builder</b></a>
+    <nav><ol id="railList"></ol></nav>
+    <div class="rail-foot">
+      
+      <p>Draft v0.1</p>
+    </div>
+  </aside>
+
+  <main class="pane" id="main" tabindex="-1">
+
+  <!-- 1 -->
+  <article class="chapter" id="ch1" data-n="1" data-t="How a brief works">
+    <div class="ch-head">
+      <div><p class="num">Chapter 1</p><h1>How a brief works</h1></div>
+      <div><p class="sum">Marketing owns the problem. Creative owns the answer, at the level that was asked for. The brief is where the two meet.</p><p class="one"><b>If you read one thing</b>Agree on the problem before anyone works on the answer.</p></div>
+    </div>
+    <section class="sec" id="s1-1" data-t="What a brief is for">
+      <header><a class="sn" href="#ch1-1">1.1</a><h2>What a brief is for</h2><span class="src">LPA training</span></header>
+      <div class="body"><p class="big">The brief is the problem. Everything after it is an answer.</p><p>If two people read the brief and come away with two different problems, it needs another pass.</p></div>
+    </section>
+    <section class="sec" id="s1-2" data-t="Get / To / By">
+      <header><a class="sn" href="#ch1-2">1.2</a><h2>Get / To / By</h2><span class="src p">Proposed</span></header>
+      <div class="body"><p class="big">The whole brief in three lines. If they're hard to write, the brief probably needs a little more focus.</p><p>Write these before anything else. Every field after this backs up one of the three lines.</p></div>
+      <div class="gtb-cards">
+        <div><b>Get</b><p>Who you're talking to, and what they do or believe today.</p><span>Ask: who exactly, and what's in the way?</span></div>
+        <div><b>To</b><p>What you want them to do or believe instead.</p><span>Ask: what changes in their head, not just their cart?</span></div>
+        <div><b>By</b><p>The one message that moves them. It's the strategy, not the creative idea.</p><span>Ask: what would make them believe it?</span></div>
+      </div>
+      <div class="example">
+        <p class="ex-label">Example</p>
+        <div class="gtb"><b>Get</b><span>busy dinner deciders who haven't tried Meal Simple</span><b>To</b><span>see Meal Simple as a real dinner, not a shortcut</span><b>By</b><span>showing it makes the 5 o'clock decision for them</span></div>
+        <p class="cap">Meal Simple is H-E-B's line of ready-to-cook meals. It's the brief the training worked through, and the example used across this site.</p>
+      </div>
+    </section>
+    <section class="sec" id="s1-3" data-t="The level of the ask">
+      <header><a class="sn" href="#ch1-3">1.3</a><h2>The level of the ask</h2><span class="src p">Proposed</span></header>
+      <div class="body">
+        <p>Say which level creative is being asked for.</p>
+        <div class="levels"><div><b>Platform</b><span>The one big idea everything else is checked against.</span></div><div><b>Activation</b><span>How the platform shows up in a channel or a moment.</span></div><div><b>Execution</b><span>The specific asset: format, size, shot.</span></div></div>
+        <p>If the idea is already decided (a mascot, a bracket), call it an execution brief. Try not to use "idea" and "concept" as separate levels. Most of the industry uses them to mean the same thing.</p>
+      </div>
+    </section>
+    <section class="sec" id="s1-4" data-t="The weekly rhythm">
+      <header><a class="sn" href="#ch1-4">1.4</a><h2>The weekly rhythm</h2><span class="src">LPA training</span></header>
+      <div class="body"><p class="big">Briefs go out by Friday at noon. Kickoff is the following Thursday.</p><p>There's no separate discovery meeting, so the brief does that job.</p></div>
+    </section>
+    <div class="more-wrap"><button class="btn ghost more-btn" type="button" aria-expanded="false" data-ch="1">Show 3 more</button></div>
+    <section class="sec extra" id="s1-5" data-t="One person, plus who's overhearing">
+      <header><a class="sn" href="#ch1-5">1.5</a><h2>One person, plus who's overhearing</h2><span class="src p">Proposed, from an H-E-B brief</span></header>
+      <div class="body"><p class="big">Write to one person you can picture. Everyone else the media reaches is overhearing.</p><p>The work should make sense to them, but it isn't written for them. A recent H-E-B brief put it this way: talk to the insiders, and let everyone else overhear.</p><p>Broad reach can be right for media. The creative target is still one person.</p></div>
+    </section>
+    <section class="sec extra" id="s1-6" data-t="The brief is the referee">
+      <header><a class="sn" href="#ch1-6">1.6</a><h2>The brief is the referee</h2><span class="src p">Proposed</span></header>
+      <div class="body"><p class="big">Every comment in review points back to a line in the brief.</p><p>If it can't, it's probably taste rather than feedback.</p></div>
+    </section>
+    <section class="sec extra" id="s1-7" data-t="If the strategy changes">
+      <header><a class="sn" href="#ch1-7">1.7</a><h2>If the strategy changes</h2><span class="src">LPA training</span></header>
+      <div class="body"><p>The brief gets rewritten and creative development restarts. Changing the strategy in a comment round is how work goes sideways.</p></div>
+    </section>
+    
+  </article>
+
+  <!-- 2 -->
+  <article class="chapter" id="ch2" data-n="2" data-t="Field guide">
+    <div class="ch-head">
+      <div><p class="num">Chapter 2</p><h1>Field guide</h1></div>
+      <div><p class="sum">Every field in the brief: what it's for, a before and after, and what to watch for. The "better" examples come from the Meal Simple rewrite.</p><p class="one"><b>If you read one thing</b>One person, one message, one primary objective.</p></div>
+    </div>
+    <div class="filter" role="group" aria-label="Show fields for" id="fgFilter"></div>
+    <div id="fieldList"></div>
+  </article>
+
+  <!-- 3 -->
+  <article class="chapter" id="ch3" data-n="3" data-t="Insight builder">
+    <div class="ch-head">
+      <div><p class="num">Chapter 3</p><h1>Insight builder</h1></div>
+      <div><p class="sum">An insight is a truth, the motivation behind it, and the tension it creates. Shoppers won't hand you one. You build it by watching what they do and asking why.</p><p class="one"><b>If you read one thing</b>A fact is what shoppers do. An insight is why it's hard for them.</p></div>
+    </div>
+    <section class="sec" id="s3-1" data-t="The formula">
+      <header><a class="sn" href="#ch3-1">3.1</a><h2>The formula</h2><span class="src">LPA training</span></header>
+      <div class="body"><p class="big">Every insight has three parts. Most insights that fall flat stop at the first one.</p></div>
+      <div class="gtb-cards">
+        <div><b>Truth</b><p>What the shopper believes, wants or feels.</p><span>Ask: what do they do, or say they want?</span></div>
+        <div><b>Motivation</b><p>The real reason why it matters to them.</p><span>Ask: why? Then ask again.</span></div>
+        <div><b>Tension</b><p>The contradiction or problem they can't solve on their own.</p><span>Ask: where does that motivation get in their way?</span></div>
+      </div>
+    </section>
+    <section class="sec" id="s3-2" data-t="The test">
+      <header><a class="sn" href="#ch3-2">3.2</a><h2>The test</h2><span class="src p">Proposed rule, LPA examples</span></header>
+      <div class="body">
+        <p class="big">A tension on its own is just a problem. A strong insight goes one step further: the thing they want is what causes the problem.</p>
+        <p>That's what makes it feel true to the shopper, and it gives creative something real to solve.</p>
+      </div>
+      <ol class="check-steps">
+        <li><b>Read the motivation.</b><span>What do they want, and why?</span></li>
+        <li><b>Read the tension.</b><span>What problem are they stuck with?</span></li>
+        <li><b>Take the motivation away.</b><span>If the problem goes away too, the motivation causes the tension. It passes.</span></li>
+      </ol>
+    </section>
+    <section class="sec wide" id="s3-3" data-t="Examples">
+      <header><a class="sn" href="#ch3-3">3.3</a><h2>Examples</h2><span class="src">LPA training and H-E-B</span></header>
+      <div class="body" style="max-width:none">
+        <div class="chains"><div class="chain feat"><p class="cn">Meal Simple <small>Proposed rewrite</small></p><p><i>Motivation</i>A real dinner is how I show my family I care.</p><p><i>Tension</i>I won't settle for a shortcut, so 5 o'clock is hard every night.</p><p class="idea"><i>The idea</i>&ldquo;Wanting to make a real dinner is what makes 5 o'clock so hard.&rdquo;</p></div><div class="chain"><p class="cn">Joe V's Full Cart <small>H-E-B brief, tension proposed</small></p><p><i>Motivation</i>A full cart is how I know I did right by my family.</p><p><i>Tension</i>Every trip, the budget decides how full it gets.</p></div><div class="chain"><p class="cn">Cowboys tailgate <small>H-E-B brief</small></p><p><i>Motivation</i>Being a fan is part of our family's identity.</p><p><i>Tension</i>Every tailgate feels like a responsibility.</p></div><div class="chain"><p class="cn">Dog bed</p><p><i>Motivation</i>I'll do anything to keep my dog happy, so she sleeps in my bed.</p><p><i>Tension</i>I don't sleep.</p><p class="idea"><i>The idea</i>You're really buying a bigger bed for you.</p></div><div class="chain"><p class="cn">Jim Beam</p><p><i>Motivation</i>No commute. That was the upside of working from home.</p><p><i>Tension</i>Nothing tells me to stop working.</p><p class="idea"><i>The idea</i>Reclaim 6 to 7 as the happiest hour.</p></div></div>
+        <p class="note">LPA's own Meal Simple line, for comparison: "Making dinner isn't always the hard part. Figuring out dinner is."</p>
+      </div>
+    </section>
+    <section class="sec wide" id="s3-4" data-t="Build yours">
+      <header><a class="sn" href="#ch3-4">3.4</a><h2>Build yours</h2><span class="src p">Proposed checks</span></header>
+      <div class="body" style="max-width:none">
+        <p>Now write yours. Start with the truth, then ask why until you hit the motivation, then find where that motivation gets in their way. The checks update as you type.</p><p class="tool-actions"><button class="btn ghost" type="button" id="exInsight">Show the Meal Simple example</button><button class="btn ghost" type="button" id="clrInsight">Clear</button></p>
+        <div class="tool"><div class="tool-grid">
+          <div>
+            <label class="fld"><span>Truth <small id="cTruth"></small></span><textarea id="inTruth" rows="2" placeholder="What the shopper believes, wants or feels"></textarea></label>
+            <label class="fld"><span>Motivation <small id="cMot"></small></span><textarea id="inMot" rows="2" placeholder="The real reason why"></textarea></label>
+            <label class="fld"><span>Tension <small id="cTen"></small></span><textarea id="inTen" rows="4" placeholder="Where that motivation gets in their way. Use a &quot;but.&quot;"></textarea></label>
+            <label class="fld" style="margin-bottom:0"><span>The one line <small id="cOne"></small></span><textarea id="inOne" rows="2" placeholder="The insight in one line, under 20 words"></textarea></label>
+          </div>
+          <div>
+            <p class="oneline" id="oneOut"></p>
+            <ul class="checks" id="insightChecks" aria-live="polite"></ul>
+            <button class="btn" type="button" id="copyInsight">Copy insight</button><span class="toast" id="toastInsight" role="status"></span>
+          </div>
+        </div></div>
+      </div>
+    </section>
+  </article>
+
+  <!-- 4 -->
+  <article class="chapter" id="ch4" data-n="4" data-t="Objectives">
+    <div class="ch-head">
+      <div><p class="num">Chapter 4</p><h1>Objectives</h1></div>
+      <div><p class="sum">Three levels, each with a number and a date. Perception moves marketing, and marketing moves the business. The number gives magnitude, and magnitude gives creative direction.</p><p class="one"><b>If you read one thing</b>Every objective gets a number and a date.</p></div>
+    </div>
+    <section class="sec" id="s4-1" data-t="Three levels">
+      <header><a class="sn" href="#ch4-1">4.1</a><h2>Three levels</h2><span class="src">LPA training</span></header>
+      <div class="body">
+        <div class="levels"><div><b>Perception</b><span>What people think. Moves slowly, often 6 to 12 months.</span></div><div><b>Marketing</b><span>What people do. The lever. Pick one primary.</span></div><div><b>Business</b><span>The result: sales, share, growth.</span></div></div>
+        <ul><li>Every objective gets a number and a date.</li><li>Say when you expect perception to move.</li><li>Bring the objectives to the post-mortem.</li><li>Bring the timing too: did the job get the weeks its work type called for? <span class="note">(Proposed)</span></li></ul>
+      </div>
+    </section>
+    <section class="sec" id="s4-2" data-t="One message">
+      <header><a class="sn" href="#ch4-2">4.2</a><h2>One message</h2><span class="src">LPA, citing Kantar</span></header>
+      <div class="body"><p class="big">One message gets close to 40% recall. By the fourth message, recall is around 9%.</p><p class="note">As quoted in the session. Check against the Kantar source before using it outside training.</p></div>
+    </section>
+  </article>
+
+  <!-- 5 -->
+  <article class="chapter" id="ch5" data-n="5" data-t="Timeline &amp; studio">
+    <div class="ch-head">
+      <div><p class="num">Chapter 5</p><h1>Timeline &amp; studio</h1></div>
+      <div><p class="sum">Pick the work type, the channels and the live date. You get the brief deadline, kickoff, and every studio checkpoint between them. The longest channel sets the clock.</p><p class="one"><b>If you read one thing</b>The longest channel sets the clock. Add TV and you need 20 weeks, whatever the work type.</p></div>
+    </div>
+    <section class="sec wide" id="s5-1" data-t="Calculator">
+      <header><a class="sn" href="#ch5-1">5.1</a><h2>Calculator</h2><span class="src p">Proposed, studio lead to confirm</span></header>
+      <div class="body" style="max-width:none">
+        <div class="tool">
+          <div class="tl-inputs">
+            <label class="fld"><span>Work type</span><select id="tlType"></select></label>
+            <label class="fld"><span>Live date</span><input type="date" id="tlLive"></label>
+            <label class="fld"><span>Shoot</span><select id="tlShoot"><option value="both">Photo and video</option><option value="photo">Photo only</option><option value="video">Video only</option><option value="none">No new shoot</option></select></label>
+            <label class="fld"><span>Today</span><input type="date" id="tlToday"></label>
+          </div>
+          <div class="opts" id="tlChannels" role="group" aria-label="Channels"></div>
+          <div class="opts"><label><input type="checkbox" id="tlLoc"> Location or casting</label></div>
+          <div id="tlOut" aria-live="polite"></div>
+          <p style="margin:8px 0 0"><button class="btn" type="button" id="copyTimeline">Copy timeline</button><span class="toast" id="toastTl" role="status"></span></p>
+        </div>
+      </div>
+    </section>
+    <div class="more-wrap"><button class="btn ghost more-btn" type="button" aria-expanded="false" data-ch="5">Show 4 more</button></div>
+    <section class="sec extra" id="s5-2" data-t="Work types">
+      <header><a class="sn" href="#ch5-2">5.2</a><h2>Work types</h2><span class="src">LPA training</span></header>
+      <div class="body"><table><thead><tr><th>Work type</th><th class="num">Weeks before live</th></tr></thead><tbody>
+        <tr><td>Marquee</td><td class="num">24</td></tr><tr><td>Extended, with TV</td><td class="num">20</td></tr><tr><td>Standard</td><td class="num">13</td></tr><tr><td>Express</td><td class="num">11</td></tr><tr><td>Revision</td><td class="num">7</td></tr><tr><td>Exact pickup</td><td class="num">1 to 5</td></tr></tbody></table></div>
+    </section>
+    <section class="sec extra" id="s5-3" data-t="Channel minimums">
+      <header><a class="sn" href="#ch5-3">5.3</a><h2>Channel minimums</h2><span class="src h">H-E-B</span></header>
+      <div class="body">
+        <p class="big">Some channels need more time than the work type gives you. The longer one wins.</p>
+        <div class="bars" role="list">
+          <div role="listitem"><span>TV</span><i style="--w:83.3%"></i><b>20 weeks</b></div>
+          <div role="listitem"><span>Signage prototype</span><i style="--w:75%"></i><b>18 weeks</b></div>
+          <div role="listitem"><span>OOH</span><i style="--w:54.2%"></i><b>13 weeks</b></div>
+          <div role="listitem" class="ref"><span>Standard job</span><i style="--w:54.2%"></i><b>13 weeks</b></div>
+        </div>
+        <p>Example: a Standard job is 13 weeks. Add TV and it runs on TV's 20 weeks instead.</p>
+      </div>
+    </section>
+    <section class="sec wide extra" id="s5-4" data-t="The studio line">
+      <header><a class="sn" href="#ch5-4">5.4</a><h2>The studio line</h2><span class="src p">Proposed, studio lead to confirm</span></header>
+      <div class="body" style="max-width:none">
+        <p class="big">Hold studio time at kickoff. Size it at concept review. Confirm or release it at approval.</p>
+        <ol class="tline">
+          <li><em>7 to 9 weeks before the shoot</em><b>Kitchen booked</b><span>Add about 4 weeks for location or casting.</span></li>
+          <li><em>4 weeks before</em><b>Crew booked</b><span>Photo, video or both decides which crew.</span></li>
+          <li><em>2 weeks before</em><b>Pre-pro</b><span>Shot list, props and food styling locked.</span></li>
+          <li class="on"><em>Shoot</em><b>About 6 weeks before live</b><span>9 weeks on a Marquee job.</span></li>
+        </ol>
+        <div class="hold">
+          <p class="ex-label">How much time to hold</p>
+          <div><b>Marquee</b><span>About 1 week</span></div><div><b>Standard</b><span>About 3 days</span></div><div><b>Express</b><span>1 to 2 days</span></div>
+          <p class="hold-note">A released hold costs nothing.</p>
+        </div>
+        <p>The shoot feeds every channel, so the earliest channel deadline sets the studio clock. Agree on a Plan B on day one.</p>
+      </div>
+    </section>
+    <section class="sec extra" id="s5-5" data-t="Levers when it slips">
+      <header><a class="sn" href="#ch5-5">5.5</a><h2>Levers when it slips</h2><span class="src p">Proposed</span></header>
+      <div class="body">
+        <p>Slips are normal, so plan for them. When you ask for more time or money, name the one lever you're pulling.</p>
+        <div class="levers" style="--x:0" id="leverRef"></div>
+        <p>Name the cost in people's time, not only budget: hours, what gets bumped, the risk.</p>
+      </div>
+    </section>
+    </article>
+
+  <!-- 6 -->
+  <article class="chapter" id="ch6" data-n="6" data-t="Ready to send">
+    <div class="ch-head">
+      <div><p class="num">Chapter 6</p><h1>Ready to send</h1></div>
+      <div><p class="sum">Thirteen checks before the Friday noon send. Tick each one as your brief meets it.</p><p class="one"><b>If you read one thing</b>When every box is ticked, you're ready to send.</p></div>
+    </div>
+    <section class="sec wide" id="s6-1" data-t="The checklist">
+      <header><a class="sn" href="#ch6-1">6.1</a><h2>The checklist</h2><span class="src p">Proposed, built on LPA fields</span></header>
+      <div class="body" style="max-width:none">
+        <div class="tool">
+          <p class="score"><b id="readyN"></b><span id="readyTitle"></span></p>
+          <div class="meter" id="readyMeter"><i id="readyBar"></i></div>
+          <ol class="rd" id="readyList"></ol>
+          <p style="margin:20px 0 0"><button class="btn ghost" type="button" id="readyReset">Clear all</button></p>
+        </div>
+      </div>
+    </section>
+  </article>
+
+  <!-- 7 -->
+  <article class="chapter" id="ch7" data-n="7" data-t="Giving feedback">
+    <div class="ch-head">
+      <div><p class="num">Chapter 7</p><h1>Giving feedback</h1></div>
+      <div><p class="sum">Separate the idea from the execution. Check the work against the brief, and trust your gut.</p><p class="one"><b>If you read one thing</b>Give feedback as objectives, not directives. Say what needs to change, not how to change it.</p></div>
+    </div>
+    <section class="sec" id="s7-1" data-t="Ears, gut, head">
+      <header><a class="sn" href="#ch7-1">7.1</a><h2>Ears, gut, head</h2><span class="src">LPA training</span></header>
+      <div class="body"><p class="big">Listen first, react second, analyze third. Then speak.</p></div>
+      <div class="gtb-cards">
+        <div><b>Ears</b><p>Is the idea clear? What does the agency recommend?</p><span>Just listen for now. Fixing comes later.</span></div>
+        <div><b>Gut</b><p>Write down your first reaction and one line on why.</p><span>Analysis makes you forget it, and a gut reaction is how shoppers see the work. Watching video? Write it down after the first play, before anyone replays it.</span></div>
+        <div><b>Head</b><p>Does it deliver the brief?</p><span>Then check it against CARDS (7.2).</span></div>
+      </div>
+    </section>
+    <section class="sec" id="s7-2" data-t="CARDS">
+      <header><a class="sn" href="#ch7-2">7.2</a><h2>CARDS</h2><span class="src">LPA training</span></header>
+      <div class="body"><p class="big">Five checks for the head step. They help you explain your gut, not replace it.</p></div>
+      <div class="panel soft"><div class="cards">
+        <div><b>C</b><span class="k">Connects</span><span>Opens the mind or the heart of the target. Not you, them.</span></div>
+        <div><b>A</b><span class="k">Amplifiable</span><span>The idea can travel across channels and keep going.</span></div>
+        <div><b>R</b><span class="k">Recognizable</span><span>People know it's us. A good idea with weak branding is fixed in execution, not thrown out.</span></div>
+        <div><b>D</b><span class="k">Distinctive</span><span>Stands apart from the category. Not so different it stops looking like H-E-B.</span></div>
+        <div><b>S</b><span class="k">Simple</span><span>Gets through in a split second.</span></div>
+      </div></div>
+    </section>
+    <section class="sec" id="s7-3" data-t="Objectives, not directives">
+      <header><a class="sn" href="#ch7-3">7.3</a><h2>Objectives, not directives</h2><span class="src">LPA training</span></header>
+      <div class="body">
+        <p class="big">Say what you want the work to accomplish, not how to do it.</p>
+        <div class="levels two"><div><b>Comments that help</b><span>Clear point of view, tied to the brief. Short. Honest. If you don't love it, it's okay to say so.</span></div><div><b>Comments that miss</b><span>Too many, not ranked, or vague. Buzzwords. Personal taste with no reason. "Frankenstein" requests that bolt options together.</span></div></div>
+        <p><b>Make statements, not questions.</b> A question makes the team guess what you think.</p>
+        <p>Leave visual solutions to the creative team. It's fine to ask whether one element could come across from another option.</p>
+      </div>
+    </section>
+    <section class="sec" id="s7-4" data-t="In the meeting">
+      <header><a class="sn" href="#ch7-4">7.4</a><h2>In the meeting</h2><span class="src">LPA training</span></header>
+      <div class="body">
+        <ol>
+          <li>Start with the option you prefer and say why.</li>
+          <li>Keep it to three improvements, the ones that matter most.</li>
+          <li>Skip options you don't want to move forward, unless the agency recommended one. Then say why you disagree.</li>
+          <li>If someone already made your point, just say "I agree" and move on.</li>
+          <li>Early rounds are about the idea. Save execution notes for later rounds.</li>
+        </ol>
+        <p><b>Speak to an option you didn't pick when:</b> the agency preferred it, you're the A or a C and see it differently from what was said, or it has something you want carried into the chosen idea.</p>
+        <p><b>When the work misses:</b> be clear and kind, and skip the compliment sandwich. Check whether the brief or the context changed. Bring a copy of the brief.</p>
+        <p class="note">Show your real reaction in the room. Share concerns in the room, not in a list afterward.</p>
+      </div>
+    </section>
+    <section class="sec" id="s7-5" data-t="Who speaks, and when">
+      <header><a class="sn" href="#ch7-5">7.5</a><h2>Who speaks, and when</h2><span class="src">LPA training</span></header>
+      <div class="body">
+        <p>Roles come from the RACI: Responsible, Accountable, Consulted, Informed. See 2.16, or the <a href="#ch10">glossary</a>.</p>
+        <ul>
+          <li><b>The R goes first.</b> That's the responsible person, usually the most junior commenter. Up to five minutes to organize thoughts, not to decide what they think.</li>
+          <li><b>Cs build on it.</b> Give input, and still state a view and a recommendation. If the agency says "both," ask which one they'd pick.</li>
+          <li><b>The A listens to all of it,</b> settles conflicts between Cs, and gives clear direction. LPA recommends the A attend the first creative presentation to avoid extra meetings and "telephone."</li>
+          <li><b>The A can hand off to the R</b> after the first stage.</li>
+          <li><b>Keep the room small.</b> Cs can leave once they've given feedback.</li>
+          <li><b>Summarize after.</b> Ideally the creative side writes the recap and the A confirms it, so both sides agree on what was said.</li>
+        </ul>
+        <div class="pending"><b>Open at H-E-B.</b> There's no written rule for who the A is by project type, and the A often doesn't see the work until a later round. The training group's next step: name the RACI at kickoff and pilot the A in the first presentation on one large project. See the RACI field (2.16) and the checklist (6.1).</div>
+      </div>
+    </section>
+    <section class="sec" id="s7-6" data-t="Three ways to run it">
+      <header><a class="sn" href="#ch7-6">7.6</a><h2>Three ways to run it</h2><span class="src">LPA training</span></header>
+      <div class="body">
+        <div class="tscroll"><table>
+          <thead><tr><th>Method</th><th>How it works</th><th>Use it when</th></tr></thead>
+          <tbody>
+            <tr><td><b>Direct</b></td><td>Creatives, R, Cs and A in one room. A spokesperson sums up where people disagree.</td><td>The default. LPA calls it the ideal.</td></tr>
+            <tr><td><b>Huddle</b></td><td>Presentation, a huddle in another room, then feedback from one spokesperson. Roughly 20 minutes each, timing not confirmed.</td><td>Many commenters, junior commenters, or many options.</td></tr>
+            <tr><td><b>Delayed</b></td><td>Feedback sent after the meeting.</td><td>Last resort. Creatives miss your reaction and it adds days.</td></tr>
+          </tbody>
+        </table></div>
+        <p class="note">Managers: prep junior commenters before the meeting, model objective-based feedback in it, and debrief after.</p>
+      </div>
+    </section>
+    <section class="sec" id="s7-7" data-t="Production counts">
+      <header><a class="sn" href="#ch7-7">7.7</a><h2>Production counts</h2><span class="src">LPA training</span></header>
+      <div class="body"><p>Talent cost and shoot timing are valid creative feedback. Say them early, when they can still shape the idea.</p></div>
+    </section>
+    <section class="sec" id="s7-8" data-t="When the strategy shifts">
+      <header><a class="sn" href="#ch7-8">7.8</a><h2>When the strategy shifts</h2><span class="src">LPA training</span></header>
+      <div class="panel dark stop">
+        <p class="stop-line">If the strategy changes, pause the feedback and update the brief first.</p>
+        <div class="stop-grid">
+          <div><b>Big shift</b><span>Rewrite the brief and re-brief the team. Then leaders decide the timing.</span></div>
+          <div><b>Small change</b><span>Check it against the brief before it goes into a comment round.</span></div>
+          <div><b>Keeps happening</b><span>Usually it's people outside the RACI weighing in late. That's a sign to fix the brief process, not the work. See 1.7.</span></div>
+        </div>
+      </div>
+    </section>
+  </article>
+
+  <!-- 8 -->
+  <article class="chapter" id="ch8" data-n="8" data-t="Examples">
+    <div class="ch-head">
+      <div><p class="num">Chapter 8</p><h1>Examples</h1></div>
+      <div><p class="sum">One brief fully rewritten, and desired behaviors from the training.</p><p class="one"><b>If you read one thing</b>Start with the Meal Simple rewrite. It shows every field done well.</p></div>
+    </div>
+    <section class="sec wide" id="s8-1" data-t="Meal Simple, rewritten">
+      <header><a class="sn" href="#ch8-1">8.1</a><h2>Meal Simple, rewritten</h2><span class="src p">LPA training brief, Proposed rewrite</span></header>
+      <div class="body" style="max-width:none">
+        <p style="max-width:68ch">The original had five goals in one box, everyone as the target, an insight with no tension, four messages, mandatories that contradicted each other, and every channel checked. Here's the rewrite.</p>
+        <div class="brief" id="exampleBrief"></div>
+        <p class="note" style="margin-top:12px">Numbers in brackets are placeholders for the real targets.</p>
+      </div>
+    </section>
+    <section class="sec wide" id="s8-2" data-t="Desired behaviors that work">
+      <header><a class="sn" href="#ch8-2">8.2</a><h2>Desired behaviors that work</h2><span class="src">LPA training</span></header>
+      <div class="body" style="max-width:none">
+        <p class="big">Each one names a shift in what people believe, not a sales number.</p>
+        <div class="behaviors"><div><p class="bb">Chrysler</p><p class="bh">Get people to want to buy a car from Detroit at all.</p></div><div><p class="bb">Cheerios</p><p class="bh">Move it from heart medicine in a bowl to an act of love.</p></div><div><p class="bb">Downy</p><p class="bh">Make every load feel incomplete without it.</p><p class="bi"><i>The idea</i>&ldquo;Half washed.&rdquo;</p></div><div><p class="bb">Allstate</p><p class="bh">Show there's no greater price than the cost of being underinsured.</p><p class="bi"><i>The idea</i>Mayhem.</p></div></div>
+      </div>
+    </section>
+  </article>
+
+  <!-- 9 -->
+  <article class="chapter" id="ch9" data-n="9" data-t="Brief Coach and AI">
+    <div class="ch-head">
+      <div><p class="num">Chapter 9</p><h1>Brief Coach and AI</h1></div>
+      <div><p class="sum">Brief Coach is an AI coach that knows this training. Use it to check a draft, get unstuck on a field, or shape feedback.</p><p class="one"><b>If you read one thing</b>Write your own draft first, then let AI help you sharpen it.</p></div>
+    </div>
+    <section class="sec wide" id="s9-1" data-t="Get Brief Coach">
+      <header><a class="sn" href="#ch9-1">9.1</a><h2>Get Brief Coach</h2><span class="src p">Pilot</span></header>
+      <div class="body" style="max-width:none">
+        <p class="big">The same coach, in the AI tool you already use.</p>
+        <div class="tools3">
+          <div class="toolcard">
+            <p class="tc-name">Copilot</p>
+            <p class="tc-status">Pilot</p>
+            <p>Open the shared agent. Nothing to set up.</p>
+            <a class="btn" id="copilotLink" href="#" target="_blank" rel="noopener">Open in Copilot</a>
+            <p class="tc-note" id="copilotNote">Link coming soon.</p>
+          </div>
+          <div class="toolcard">
+            <p class="tc-name">Claude</p>
+            <p class="tc-status">Set up your own, 2 minutes</p>
+            <ol><li>In Claude, create a new <b>Project</b> called Brief Coach.</li><li>Paste the instructions into the project's instructions.</li><li>Download the guide and add it to the project's files.</li><li>Open the project and start a chat.</li></ol>
+            <div class="tc-btns"><button class="btn ghost" type="button" data-copy="agentInstr">Copy the instructions</button><button class="btn ghost" type="button" data-download="agentGuide" data-name="Brief Builder guide.md">Download the guide</button></div>
+          </div>
+          <div class="toolcard">
+            <p class="tc-name">Gemini</p>
+            <p class="tc-status">Pilot</p>
+            <p>A shared agent, like the Copilot one. Nothing to set up.</p>
+            <a class="btn" id="geminiLink" href="#" target="_blank" rel="noopener">Open in Gemini</a>
+            <p class="tc-note" id="geminiNote">Link coming once the rollout reaches us.</p>
+          </div>
+        </div>
+        <span class="toast" id="toastAgent" role="status"></span>
+        <p class="note">Same coaching in every tool. Copilot is H-E-B's approved option; use the tools H-E-B approves for internal work.</p>
+      </div>
+    </section>
+    <section class="sec" id="s9-2" data-t="How to use it">
+      <header><a class="sn" href="#ch9-2">9.2</a><h2>How to use it</h2><span class="src p">Proposed</span></header>
+      <div class="body">
+        <p class="big">Paste your draft, fix the top three things, and repeat until it says Ready to send.</p>
+        <ol>
+          <li>Start with <b>Review my brief</b> and paste in your whole brief.</li>
+          <li>You get a verdict (Ready to send, Close, or Not yet) and the three fixes that matter most, each with an example.</li>
+          <li>Fix those in your doc, paste it back, and ask "Is it ready now?" Most briefs take two or three rounds.</li>
+        </ol>
+        <p>Other times it helps:</p>
+        <ul>
+          <li><b>Starting out.</b> Paste your notes or your director's email into <b>Start from my notes</b>.</li>
+          <li><b>Stuck on a field.</b> Ask "Is this an insight?" or "Help me pick one benefit."</li>
+          <li><b>After a creative review.</b> Use <b>Turn my reaction into feedback</b> to turn a gut reaction into a comment tied to the brief.</li>
+        </ul>
+        <p class="note">It won't write your brief for you, and it won't make up numbers. You'll see [number needed] where you need to fill one in.</p>
+      </div>
+    </section>
+    <section class="sec wide" id="s9-3" data-t="Prompts for any AI tool">
+      <header><a class="sn" href="#ch9-3">9.3</a><h2>Prompts for any AI tool</h2><span class="src p">Proposed, following LPA</span></header>
+      <div class="body" style="max-width:76ch"><div id="prompts"></div><span class="toast" id="toastPrompt" role="status" style="margin:0"></span></div>
+    </section>
+  </article>
+  <!-- 10 -->
+  <article class="chapter" id="ch10" data-n="10" data-t="Glossary">
+    <div class="ch-head">
+      <div><p class="num">Chapter 10</p><h1>Glossary</h1></div>
+      <div><p class="sum">Every term and acronym used on this site, in plain words.</p></div>
+    </div>
+    <section class="sec wide" id="s10-1" data-t="Terms">
+      <header><a class="sn" href="#ch10-1">10.1</a><h2>Terms</h2><span class="src p">Proposed definitions</span></header>
+      <div class="body" style="max-width:none"><dl class="gloss"><div><dt>A, R, C, I</dt><dd>The four RACI roles. Accountable makes the call. Responsible does the work and speaks first in feedback. Consulted gives input. Informed is kept in the loop.</dd></div><div><dt>Activation</dt><dd>How a platform idea shows up in one channel or moment. See 1.3.</dd></div><div><dt>CARDS</dt><dd>Five checks for creative work: Connects, Amplifiable, Recognizable, Distinctive, Simple. See 7.2.</dd></div><div><dt>Concept review</dt><dd>The meeting where creative shows its first ideas. The studio hold gets sized here.</dd></div><div><dt>Desired behavior</dt><dd>What you want the shopper to do or believe after seeing the work. A shift in belief, not a sales number. See 2.2.</dd></div><div><dt>Execution</dt><dd>The specific asset: format, size, shot. See 1.3.</dd></div><div><dt>Get / To / By</dt><dd>The brief in three lines: who, what you want them to do or believe, and the message that moves them. See 1.2.</dd></div><div><dt>Insight</dt><dd>A truth, the motivation behind it, and the tension it creates. See chapter 3.</dd></div><div><dt>Kickoff</dt><dd>The meeting where the brief is presented to creative. Thursdays, the week after the brief goes out.</dd></div><div><dt>LPA</dt><dd>The firm that ran the two-day brief and feedback training this site is built on.</dd></div><div><dt>Mandatories</dt><dd>Things the work must include, like legal lines or a logo. Keep it to true requirements.</dd></div><div><dt>Media target</dt><dd>Who the media plan reaches. It's often wider than the strategic target.</dd></div><div><dt>MSM</dt><dd>The marketing manager who writes and owns the brief.</dd></div><div><dt>OOH</dt><dd>Out-of-home: billboards, transit and other ads people see outside.</dd></div><div><dt>Platform</dt><dd>The one big idea everything else is checked against. See 1.3.</dd></div><div><dt>Pre-pro</dt><dd>The pre-production meeting before a shoot, where the shot list, props and styling get locked.</dd></div><div><dt>RACI</dt><dd>The chart of who's Responsible, Accountable, Consulted and Informed on a project. See 2.16.</dd></div><div><dt>Reason to believe</dt><dd>A fact that proves the benefit. Every one has to support the same benefit.</dd></div><div><dt>Strategic target</dt><dd>The one person the brief is written to, and their mindset. See 2.6.</dd></div><div><dt>Studio hold</dt><dd>Time held on the studio calendar at kickoff. Sized at concept review, confirmed or released at approval. See 5.4.</dd></div><div><dt>Work types</dt><dd>Marquee, Extended, Standard, Express, Revision and Exact pickup. Each sets how many weeks the work needs. See 5.2.</dd></div></dl>
+      <p class="note">Confirm the MSM title and the work type definitions with the brief owners.</p></div>
+    </section>
+  </article>
+
+
+  </main>
+</div>
+
+<script>
+(function(){
+"use strict";
+var $ = function(id){ return document.getElementById(id); };
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+
+/* ---------- Clipboard ---------- */
+function copyText(text, toastId){
+  var t = $(toastId);
+  function ok(){ t.textContent = "Copied."; setTimeout(function(){ t.textContent = ""; }, 1800); }
+  function fail(){ t.textContent = "Copy was blocked. Select the text and copy it instead."; }
+  try { navigator.clipboard.writeText(text).then(ok, fail); } catch(e){ fail(); }
+}
+
+/* ---------- Front door ---------- */
+var SURF = {
+  campaign: [["1.2","Get / To / By","Write the brief in three lines before anything else."],["3.4","Insight builder","Truth, motivation, tension, with checks as you type."],["4.1","Three levels of objective","Perception, marketing, business. Each with a number and a date."],["5.1","Timeline calculator","Your brief deadline, kickoff and studio dates."],["6.1","Ready to send","Thirteen checks before Friday noon."]],
+  execution: [["1.3","The level of the ask","Say it's an execution brief when the idea is set."],["2.6","Strategic target","One person and their mindset."],["2.9","Benefit","One message. If you need \"and,\" it's two."],["2.11","Mandatories","Keep it to true requirements."],["5.1","Timeline calculator","Your brief deadline, kickoff and studio dates."],["6.1","Ready to send","Thirteen checks before Friday noon."]],
+  review: [["1.2","Get / To / By","If you can't write it from the brief, send it back."],["2","Field guide","The common mistake for every field."],["6.1","Ready to send","Use it as your review list."],["1.7","If the strategy changes","Rewrite and restart, not a comment round."],["9.1","Brief Coach","An AI coach that checks your brief against this training."]],
+  concept: [["7.1","Ears, gut, head","Listen, react, then analyze."],["7.2","CARDS","Five checks behind your gut."],["7.4","In the meeting","Preferred option first. Three improvements, max."],["1.6","The brief is the referee","Every comment points to a line."],["2.13","How we'll judge the work","The criteria everyone reviews against."],["1.3","The level of the ask","Judge the work at the level that was asked for."],["7.7","Production counts","Talent and timing are valid feedback."]],
+  shoot: [["5.1","Timeline calculator","Every studio checkpoint from one live date."],["5.4","The studio line","Hold at kickoff, size at concept, confirm at approval."],["2.15","Studio plan","What the brief has to say for you to hold a date."],["5.5","Levers when it slips","Scope, pay, trade, flight, or move the date."]]
+};
+var ROLE_ADD = { msm:["1.4","The weekly rhythm","Briefs out Friday at noon. Kickoff Thursday."], strat:["2.2","Desired consumer behavior","Revisit it after the insight, with the MSM."], studio:["5.4","The studio line","Hold at kickoff, size at concept, confirm at approval."], lead:["8.1","Meal Simple, rewritten","What a strong brief looks like, field by field."], cd:["8.1","Meal Simple, rewritten","What a strong brief looks like, field by field."] };
+function renderDoor(){
+  var task = $("pickTask").value, role = $("pickRole").value;
+  var list = SURF[task].slice();
+  var add = ROLE_ADD[role];
+  if (add && !list.some(function(x){ return x[0] === add[0]; }) && list.length < 6) list.push(add);
+  $("surface").innerHTML = list.map(function(x){
+    return '<li><a href="#ch' + x[0].replace(".", "-") + '"><span class="ref">' + x[0] + '</span><span class="t">' + esc(x[1]) + '</span><span class="d">' + esc(x[2]) + '</span></a></li>';
+  }).join("");
+  try { localStorage.setItem("bb-door", task + "|" + role); } catch(e){}
+}
+try { var saved = (localStorage.getItem("bb-door") || "").split("|"); if (saved[0] && SURF[saved[0]]) $("pickTask").value = saved[0]; if (saved[1]) $("pickRole").value = saved[1]; } catch(e){}
+function fit(sel){
+  var m = document.createElement("span"), cs = getComputedStyle(sel);
+  m.style.cssText = "position:absolute;visibility:hidden;white-space:pre;font:" + cs.font + ";letter-spacing:" + cs.letterSpacing;
+  m.textContent = sel.options[sel.selectedIndex].text; document.body.appendChild(m);
+  sel.style.width = Math.ceil(m.getBoundingClientRect().width + parseFloat(cs.fontSize) * 0.95) + "px"; m.remove();
+}
+function fitAll(){ fit($("pickTask")); fit($("pickRole")); }
+$("pickTask").addEventListener("change", fitAll); $("pickRole").addEventListener("change", fitAll);
+window.addEventListener("resize", fitAll);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
+fitAll();
+$("pickTask").addEventListener("change", renderDoor);
+$("pickRole").addEventListener("change", renderDoor);
+renderDoor();
+
+/* ---------- Field guide ---------- */
+var FIELDS = [
+ ["Summary", "Get / To / By", "p", "The whole brief in three lines: who you're talking to, what you want them to do or believe, and the message that gets them there.", "Get Texans To shop H-E-B more By showing our value.", "Get busy dinner deciders who haven't tried Meal Simple To see it as a real dinner By showing it makes the 5 o'clock decision for them.", "Each line should match a field below. Get matches the target, To matches the desired behavior, and By matches the benefit."],
+ ["Why", "Desired consumer behavior", "l", "The change in what the shopper believes, before they change what they buy.", "Get more people to try Meal Simple and grow sales.", "Reframe Meal Simple from a shortcut to a way of taking care of my family on a busy night.", "\"Buy more\" is an objective, not a behavior. Ask what they'd have to believe first. Come back to this after you write the insight, ideally with the creative strategist."],
+ ["Why", "Background", "l", "Two or three sentences on what's happening today.", "A paragraph that repeats the rest of the brief.", "We lose weeknight dinner to takeout and \"the usual.\" Shoppers trust H-E-B, but Meal Simple isn't top of mind at 4:30.", "If a sentence belongs in another field, move it there. Saying the same thing twice in different words confuses people."],
+ ["Why", "Objectives", "l", "Three goals: one for the business, one for marketing and one for perception. Each gets a number and a date.", "Awareness, trial, sales, loyalty and engagement all checked.", "Business: sales +10% FY27. Marketing #1: +5% first-time buyers, Mar to May. Perception: +5 pts in 12 months.", "Pick one primary marketing objective. Perception takes 6 months or more to move. Bring these numbers to the post-mortem."],
+ ["Why", "Media context", "l", "What else H-E-B has in market at the same time.", "Blank.", "Spring seasonal foods runs Mar to May. Feature spring meals.", "Ask the media team what else is running. It also shows where shoots can be combined."],
+ ["Who", "Strategic target", "l", "One person, described well enough to picture, and what's on their mind.", "Busy Texans 18 to 65+.", "Works full time, two kids, shops H-E-B weekly. 4:30 and no plan.", "Also name who's overhearing: people who'll see the work but aren't the target. See 1.5."],
+ ["Who", "Insight", "l", "Why the shopper is stuck: what they want, why it matters, and what gets in the way.", "I'm busy and want dinner to be easy and tasty.", "Wanting to make a real dinner is what makes 5 o'clock so hard.", "If the tension has no \"but,\" it may not be an insight yet. The strongest ones are where the motivation causes the tension. Build yours in 3.4."],
+ ["Who", "Media targets", "l", "Who the media plan reaches, and when.", "All H-E-B markets.", "Texas households of 2+, dual income with kids first. Afternoon and early evening.", "This narrows the strategic target. It doesn't replace it. Ask the media team for their brief."],
+ ["What", "Benefit", "l", "The one thing the work has to say.", "Convenient, delicious, quality and great value.", "Meal Simple is a real dinner, decided for you.", "One message. If you need the word \"and,\" you have two. See 4.2."],
+ ["What", "Reasons to believe", "l", "Facts that prove the benefit. Keep them focused on that one benefit.", "H-E-B is a great Texas company.", "Full meals in one spot. Ready in about 20 minutes. Less than takeout.", "Read each one right after the benefit. If it doesn't prove it, it can probably go."],
+ ["What", "Mandatories", "l", "Things the work must include. Keep it to true requirements.", "Make it stand out but keep it familiar.", "Feature the marinated chicken. Recognizable in 2 seconds. Spanish versions.", "Nice-to-haves belong in considerations. A long list of mandatories can decide the idea before creative starts."],
+ ["What", "Considerations", "l", "Options creative can weigh, but doesn't have to use.", "Products and offers TBD.", "Rotate meals by season. A delivery tag version.", "Some of these change the studio schedule, like one shoot or four. Settle those at kickoff."],
+ ["What", "How we'll judge the work", "p", "Three to five things the work will be reviewed against.", "We'll know it when we see it.", "Makes a shortcut feel like caring. One message. Works on a phone and at the shelf. Clearly H-E-B.", "Without these, feedback turns into personal taste."],
+ ["What", "Level of the ask", "p", "Whether you're asking for a platform, an activation or an execution.", "A \"concept\" brief with the idea already decided.", "Platform. Executions after it's approved.", "If the idea is already decided, call it an execution brief. See 1.3."],
+ ["How", "Studio plan", "p", "What the studio needs to hold time: photo or video, the shoot window, and what's decided versus still open.", "Nothing until the concept is sold.", "Photo and video in one day. Hold 3 days at kickoff. Plan B: hero product plus existing photography.", "Nobody knows the final shots at kickoff. Hold studio time anyway, and size it at concept review."],
+ ["How", "RACI", "l", "Who's Responsible, Accountable, Consulted and Informed at each stage.", "Everyone in the meeting.", "Brief: MSM responsible, MSM director accountable, creative strategist and media consulted, creative directors informed.", "If the strategy changes, rewrite the brief and start creative over. See 1.7."],
+ ["How", "Timing", "l", "The work type, the live date, and the dates that follow from them.", "Spring, dates TBD.", "Standard, 13 weeks. Live March 1. Kickoff by Dec 1.", "Channels like TV can need more time than the work type. Check 5.3, or use the calculator in 5.1."]
+];
+var SRC = { l:['','LPA training'], p:['p','Proposed'], h:['h','H-E-B'] };
+var groups = ["All","Summary","Why","Who","What","How"];
+function renderFields(g){
+  $("fieldList").innerHTML = FIELDS.map(function(f, i){
+    if (g !== "All" && f[0] !== g) return "";
+    var s = SRC[f[2]];
+    return '<section class="field" id="s2-' + (i+1) + '" data-t="' + esc(f[1]) + '"><header><a class="sn" href="#ch2-' + (i+1) + '">2.' + (i+1) + ' <span class="note">' + f[0] + '</span></a><h3>' + esc(f[1]) + '</h3><span class="src ' + s[0] + '">' + s[1] + '</span></header>' +
+      '<div><p class="job">' + esc(f[3]) + '</p><dl class="wsw"><dt>Before</dt><dd class="weak">' + esc(f[4]) + '</dd><dt>Better</dt><dd class="strong">' + esc(f[5]) + '</dd><dt>Watch for</dt><dd>' + esc(f[6]) + '</dd></dl></div></section>';
+  }).join("");
+}
+$("fgFilter").innerHTML = groups.map(function(g, i){ return '<button type="button" aria-pressed="' + (i === 0) + '" data-g="' + g + '">' + g + '</button>'; }).join("");
+$("fgFilter").addEventListener("click", function(e){
+  var b = e.target.closest("button"); if (!b) return;
+  [].forEach.call(this.children, function(x){ x.setAttribute("aria-pressed", x === b); });
+  renderFields(b.dataset.g); buildRail();
+});
+renderFields("All");
+
+/* ---------- Insight builder ---------- */
+var tIn = $("inTruth"), mIn = $("inMot"), nIn = $("inTen"), oIn = $("inOne");
+var EX_INSIGHT = ["Dinner has to get figured out almost every night.", "Making a real dinner is how I show my family I care.", "But because it has to be a real dinner, I won't settle for a shortcut, and holding out for that is what makes 5 o'clock so hard.", "Wanting to make a real dinner is what makes 5 o'clock so hard."];
+var STOP = "that this with from have what when your they them their there about because would could should just make makes made every night really thing things into than then only also been being which while where".split(" ");
+function keyWords(s){ return (s.toLowerCase().match(/[a-z']+/g) || []).filter(function(w){ return w.length > 3 && STOP.indexOf(w) < 0; }); }
+function wc(s){ return (s.trim().match(/\S+/g) || []).length; }
+function renderInsight(){
+  var t = tIn.value, m = mIn.value, n = nIn.value, o = oIn.value, all = t + " " + m + " " + n;
+  var nk = keyWords(n), shared = keyWords(m).filter(function(w){ return nk.indexOf(w) >= 0; });
+  $("cTruth").textContent = wc(t) + " of 30 words"; $("cMot").textContent = wc(m) + " of 30 words";
+  $("cTen").textContent = wc(n) + " of 40 words"; $("cOne").textContent = wc(o) + " of 20 words";
+  var checks = [
+    [/\b(but|yet|except|however|instead)\b/i.test(n), "The tension has a \"but.\"", "Try adding a \"but\" to the tension. An insight usually needs a contradiction."],
+    [shared.length > 0, "The motivation shows up in the tension (" + shared.slice(0,3).join(", ") + ").", "The tension doesn't pick up the motivation. Ask: does wanting this cause the problem?"],
+    [/\b(i|i'm|i've|my|me)\b/i.test(all), "Written in the shopper's voice.", "Write it the way the shopper would say it: I, my, me."],
+    [!/(h-e-b|\bheb\b|meal simple)/i.test(all), "No brand in the insight. It's about them, not us.", "Try taking the brand out. The insight is about the person, not us."],
+    [wc(t) <= 30 && wc(m) <= 30 && wc(n) <= 40, "Each part is short enough to remember.", "One part runs long. Try trimming each to one breath."],
+    [wc(o) > 0 && wc(o) <= 20, "The one line is under 20 words.", wc(o) ? "The one line runs over 20 words." : "Write the one line."]
+  ];
+  if (!(t + m + n + o).trim()){ $("insightChecks").innerHTML = '<li class="idle"><span class="ic" aria-hidden="true">·</span><span>Start typing and six checks appear here.</span></li>'; $("oneOut").textContent = "Your one line shows here."; return; }
+  $("insightChecks").innerHTML = checks.map(function(c){
+    return '<li class="' + (c[0] ? "ok" : "no") + '"><span class="ic" aria-hidden="true">' + (c[0] ? "✓" : "!") + '</span><span><span class="vh">' + (c[0] ? "Passes: " : "Fix: ") + '</span>' + esc(c[0] ? c[1] : c[2]) + '</span></li>';
+  }).join("");
+  $("oneOut").textContent = o.trim() ? "“" + o.trim() + "”" : "Your one line shows here.";
+}
+[tIn, mIn, nIn, oIn].forEach(function(el){ el.addEventListener("input", renderInsight); });
+$("exInsight").addEventListener("click", function(){ [tIn, mIn, nIn, oIn].forEach(function(el, i){ el.value = EX_INSIGHT[i]; }); renderInsight(); });
+$("clrInsight").addEventListener("click", function(){ [tIn, mIn, nIn, oIn].forEach(function(el){ el.value = ""; }); renderInsight(); tIn.focus(); });
+renderInsight();
+$("copyInsight").addEventListener("click", function(){
+  copyText("Truth: " + tIn.value + "\nMotivation: " + mIn.value + "\nTension: " + nIn.value + "\nOne line: " + oIn.value, "toastInsight");
+});
+
+/* ---------- Timeline ---------- */
+var TYPES = [
+ {id:"marquee",n:"Marquee",wk:24,dir:11,shoot:9,hold:"about 1 week"},
+ {id:"extended",n:"Extended, with TV",wk:20,dir:11,shoot:9,hold:"about 1 week"},
+ {id:"standard",n:"Standard",wk:13,dir:8,shoot:6,hold:"about 3 days"},
+ {id:"express",n:"Express",wk:11,dir:7,shoot:5,hold:"1 to 2 days"},
+ {id:"revision",n:"Revision",wk:7,dir:null,shoot:null,hold:"none"},
+ {id:"pickup",n:"Exact pickup",wk:5,dir:null,shoot:null,hold:"none"}
+];
+var CHANNELS = [{id:"tv",n:"TV",wk:20},{id:"sign",n:"Signage prototype",wk:18},{id:"ooh",n:"OOH",wk:13}];
+var LEVERS = [["Scope down","Fewer meals, fewer cuts, one hero."],["Pay","Overtime or outside crew. Say what it costs."],["Trade","Something else on the studio calendar moves. Say what."],["Flight it","Launch with existing assets, add new ones later."],["Move the date","The cleanest option when the work matters most."]];
+var leverHTML = LEVERS.map(function(l){ return '<div><b>' + l[0] + '</b>' + l[1] + '</div>'; }).join("");
+$("leverRef").innerHTML = leverHTML;
+$("tlType").innerHTML = TYPES.map(function(t){ return '<option value="' + t.id + '"' + (t.id === "standard" ? " selected" : "") + '>' + t.n + ', ' + t.wk + ' weeks</option>'; }).join("");
+(function(){ var d = new Date(); d.setDate(d.getDate() + 7*20); while (d.getDay() !== 1) d.setDate(d.getDate() + 1); var el = document.getElementById("tlLive"); if (!el.value) el.value = d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); })();
+$("tlChannels").innerHTML = CHANNELS.map(function(c){ return '<label><input type="checkbox" id="ch-' + c.id + '"' + "" + '> ' + c.n + ', ' + c.wk + ' weeks</label>'; }).join("");
+function iso(d){ var m = d.getMonth()+1, x = d.getDate(); return d.getFullYear() + "-" + (m<10?"0":"") + m + "-" + (x<10?"0":"") + x; }
+$("tlToday").value = iso(new Date());
+function parse(s){ if (!s) return null; var p = s.split("-"); return new Date(+p[0], +p[1]-1, +p[2]); }
+function addDays(d, n){ var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate()+n); return x; }
+function weeksBefore(d, w){ return addDays(d, -7*w); }
+function thursdayOnOrBefore(d){ return addDays(d, -((d.getDay() - 4 + 7) % 7)); }
+function mondayOf(d){ return addDays(d, -((d.getDay() + 6) % 7)); }
+var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"], DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+function fmt(d){ return DOW[d.getDay()] + " " + MON[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear(); }
+function short(d){ return MON[d.getMonth()] + " " + d.getDate(); }
+function daysBetween(a, b){ return Math.round((b - a) / 86400000); }
+/* Business days: weekends and major holidays are off (assumption until the marketing calendar is in). */
+function nth(y, m, dow, n){ var d = new Date(y, m, 1), c = 0; while (true){ if (d.getDay() === dow && ++c === n) return d; d = addDays(d, 1); } }
+function lastDow(y, m, dow){ var d = new Date(y, m + 1, 0); while (d.getDay() !== dow) d = addDays(d, -1); return d; }
+function observed(d){ return d.getDay() === 6 ? addDays(d, -1) : d.getDay() === 0 ? addDays(d, 1) : d; }
+var HOLI = {};
+function holidays(y){
+  if (HOLI[y]) return HOLI[y];
+  var t = nth(y, 10, 4, 4), list = [
+    [observed(new Date(y, 0, 1)), "New Year's Day"], [lastDow(y, 4, 1), "Memorial Day"],
+    [observed(new Date(y, 6, 4)), "Independence Day"], [nth(y, 8, 1, 1), "Labor Day"],
+    [t, "Thanksgiving"], [addDays(t, 1), "the day after Thanksgiving"],
+    [observed(new Date(y, 11, 25)), "Christmas"]];
+  var m = {}; list.forEach(function(x){ m[iso(x[0])] = x[1]; }); return (HOLI[y] = m);
+}
+function offReason(d){ var n = holidays(d.getFullYear())[iso(d)]; return n ? n : (d.getDay() === 0 || d.getDay() === 6) ? "a weekend" : null; }
+function workBack(d){ var x = d, why = null, from = d; while (offReason(x)) { why = why || offReason(x); x = addDays(x, -1); } return {d:x, why:why, from:from}; }
+function bizDays(a, b){ var n = 0, s = a < b ? 1 : -1, x = a; while (iso(x) !== iso(b)) { x = addDays(x, s); if (!offReason(x)) n += s; } return n; }
+
+function plan(input){
+  var t = TYPES.filter(function(x){ return x.id === input.type; })[0];
+  var live = input.live, today = input.today;
+  var chosen = CHANNELS.filter(function(c){ return input.channels.indexOf(c.id) >= 0; });
+  var need = t.wk, driver = t.n;
+  chosen.forEach(function(c){ if (c.wk > need) { need = c.wk; driver = c.n; } });
+  var kickoff = thursdayOnOrBefore(weeksBefore(live, need)), brief = addDays(kickoff, -6), rows = [];
+  rows.push({k:"Brief sent", d:brief, note:"Friday at noon, to the creative strategist and creative directors."});
+  rows.push({k:"Kickoff", d:kickoff, note:need + " weeks before live, set by " + driver + "."});
+  var shooting = input.shoot !== "none" && t.shoot !== null;
+  if (shooting) {
+    var extra = input.loc ? 4 : 0, shootD = mondayOf(weeksBefore(live, t.shoot));
+    rows.push({k:"Studio hold placed", d:kickoff, note:"Hold " + t.hold + ". Size it at concept review, confirm or release at approval.", studio:true});
+    var kitchen = addDays(shootD, -7*(7+extra));
+    rows.push({k:"Kitchen booked, latest", d:kitchen, note:"7 to 9 weeks before the shoot" + (extra ? ", plus 4 for location or casting" : "") + "." + (kitchen < kickoff ? " This lands before kickoff, so book it when the project is classified." : ""), studio:true});
+    if (t.dir !== null) rows.push({k:"Creative direction locked", d:weeksBefore(live, t.dir), note:"After this, changes cost studio time."});
+    if (chosen.some(function(c){ return c.id === "sign"; })) rows.push({k:"Signage art check", d:addDays(kickoff, 7), note:"Signage needs final photography before its art is due. Confirm the date with the signage team and shoot ahead of it.", studio:true});
+    rows.push({k:"Crew booked", d:weeksBefore(shootD, 4), note:"4 weeks before the shoot.", studio:true});
+    rows.push({k:"Pre-pro", d:weeksBefore(shootD, 2), note:"2 weeks before the shoot.", studio:true});
+    rows.push({k:input.shoot === "photo" ? "Photo shoot" : input.shoot === "video" ? "Video shoot" : "Shoot, photo and video", d:shootD, note:"Week of.", studio:true, shoot:true});
+    if (input.shoot !== "photo") rows.push({k:"Edit and finishing", d:addDays(shootD, 7), note:"2 to 3 weeks.", studio:true});
+  } else if (t.dir !== null) {
+    rows.push({k:"Creative direction locked", d:weeksBefore(live, t.dir), note:""});
+  }
+  rows.push({k:"Live", d:live, note:""});
+  rows.forEach(function(r){ if (r.k === "Live") return; var w = workBack(r.d); if (w.why) { r.note = (r.note ? r.note + " " : "") + "Moved up from " + fmt(w.from) + " (" + w.why + ")."; r.d = w.d; } });
+  var bk = rows.filter(function(r){ return r.k === "Brief sent"; })[0], kk = rows.filter(function(r){ return r.k === "Kickoff"; })[0];
+  brief = bk.d; kickoff = kk.d;
+  rows.sort(function(a, b){ return a.d - b.d; });
+  var warnings = [];
+  chosen.forEach(function(c){ var ck = thursdayOnOrBefore(weeksBefore(live, c.wk)); if (addDays(ck, -6) < today) warnings.push(c.n + " needs " + c.wk + " weeks. Its kickoff was " + fmt(ck) + "."); });
+  var art = rows.filter(function(r){ return r.k === "Signage art check"; })[0], sh = rows.filter(function(r){ return r.shoot; })[0];
+  if (art && sh && sh.d > art.d) warnings.push("The shoot lands after signage art is due (" + fmt(art.d) + "). Shoot earlier, or plan signage around existing photography.");
+  if (t.shoot === null && input.shoot !== "none") warnings.push(t.n + " assumes no new photography. A shoot makes this an Express job at least.");
+  return {rows:rows, brief:brief, kickoff:kickoff, need:need, driver:driver, daysToBrief:daysBetween(today, brief), bizToBrief:bizDays(today, brief), warnings:warnings, live:live, today:today, label:t.n};
+}
+function readInput(){
+  return { type:$("tlType").value, live:parse($("tlLive").value), today:parse($("tlToday").value) || new Date(), shoot:$("tlShoot").value, loc:$("tlLoc").checked,
+    channels: CHANNELS.filter(function(c){ return $("ch-" + c.id).checked; }).map(function(c){ return c.id; }) };
+}
+var lastPlan = null;
+function renderTimeline(){
+  var input = readInput(), out = $("tlOut");
+  if (!input.live) { out.innerHTML = '<p class="status"><span class="msg">Pick a live date.</span></p>'; lastPlan = null; return; }
+  var p = plan(input); lastPlan = p;
+  var weeksLeft = Math.floor(daysBetween(p.today, p.live) / 7), late = p.daysToBrief < 0, msg;
+  if (!late) msg = "On time. The brief is due " + fmt(p.brief) + ", " + p.bizToBrief + " business day" + (p.bizToBrief === 1 ? "" : "s") + " from today.";
+  else { var wk = Math.ceil(-p.daysToBrief / 7); msg = "Behind schedule. The brief would have needed to go out " + wk + " week" + (wk === 1 ? "" : "s") + " ago. See 5.5 for options."; }
+  var h = '<div class="status"><span class="wk">' + weeksLeft + ' weeks to live</span><span class="msg">This needs ' + p.need + ' weeks, set by ' + esc(p.driver) + '. Dates skip weekends and major holidays.</span><span class="msg' + (late ? " late" : "") + '">' + msg + '</span></div>';
+  if (p.warnings.length) h += '<ul class="flags">' + p.warnings.map(function(w){ return '<li>' + esc(w) + '</li>'; }).join("") + '</ul>';
+  // bar
+  var start = p.rows[0].d < p.today ? p.rows[0].d : p.today, span = Math.max(1, daysBetween(start, p.live));
+  function pos(d){ return Math.min(100, Math.max(0, daysBetween(start, d) / span * 100)); }
+  var marks = [["Brief", p.brief, ""], ["Kickoff", p.kickoff, ""]];
+  p.rows.forEach(function(r){ if (r.shoot) marks.push(["Shoot", r.d, "studio"]); });
+  marks.push(["Live", p.live, ""]);
+  h += '<div class="bar" aria-hidden="true"><div class="axis"></div><div class="run" style="left:' + pos(p.brief) + '%;width:' + (100 - pos(p.brief)) + '%"></div>';
+  var groups = [];
+  marks.forEach(function(m){
+    var x = pos(m[1]), g = groups[groups.length - 1];
+    h += '<div class="pin ' + m[2] + '" style="left:' + x + '%"></div>';
+    if (g && x - g.x < 10) { g.names.push(m[0].toLowerCase()); } else groups.push({x:x, names:[m[0]], d:m[1]});
+  });
+  groups.forEach(function(g){
+    var cx = Math.min(94, Math.max(6, g.x)), nm = g.names.length > 1 ? g.names.slice(0, -1).join(", ") + " and " + g.names[g.names.length - 1] : g.names[0];
+    h += '<div class="lab up" style="left:' + cx + '%">' + nm + '</div><div class="lab dn" style="left:' + cx + '%">' + short(g.d) + "" + '</div>';
+  });
+  var tx = pos(p.today);
+  if (tx > 1 && tx < 99 || late) h += '<div class="pin today" style="left:' + tx + '%"></div>' + (late ? "" : '<div class="lab dn today" style="left:' + Math.min(94, Math.max(6, tx)) + '%">Today</div>');
+  h += '</div>';
+  h += '<ol class="steps">' + p.rows.map(function(r){
+    var past = r.d < p.today && r.k !== "Live";
+    return '<li><span class="when' + (past ? " past" : "") + '">' + fmt(r.d) + '</span><span class="k">' + esc(r.k) + (r.studio ? '<i>Studio</i>' : '') + (past ? '<i>Passed</i>' : '') + '</span>' + (r.note ? '<span class="nt">' + esc(r.note) + '</span>' : '') + '</li>';
+  }).join("") + '</ol>';
+  if (late || p.warnings.length) h += '<p style="margin:0 0 4px;font-weight:500">Pick a lever</p><div class="levers">' + leverHTML + '</div><p class="note" style="margin:0 0 16px">Name the cost in people\'s time: hours, what gets bumped, the risk.</p>';
+  out.innerHTML = h;
+}
+["tlType","tlLive","tlToday","tlShoot","tlLoc"].forEach(function(id){ $(id).addEventListener("input", renderTimeline); $(id).addEventListener("change", renderTimeline); });
+CHANNELS.forEach(function(c){ $("ch-" + c.id).addEventListener("change", renderTimeline); });
+renderTimeline();
+$("copyTimeline").addEventListener("click", function(){
+  if (!lastPlan) return;
+  var lines = ["Timeline: " + lastPlan.label + ", live " + fmt(lastPlan.live)];
+  lastPlan.rows.forEach(function(r){ lines.push(fmt(r.d) + "   " + r.k + (r.note ? ". " + r.note : "")); });
+  lastPlan.warnings.forEach(function(w){ lines.push("Flag: " + w); });
+  copyText(lines.join("\n"), "toastTl");
+});
+
+/* ---------- Ready to send ---------- */
+var READY = [["Summary","Get / To / By fits in three lines and matches the fields"],["Why","Desired behavior is a shift in belief, not a sales goal"],["Why","Background is 2 to 3 sentences, nothing repeated"],["Why","One primary objective, and every objective has a number and a date"],["Who","Strategic target is one person, with who's overhearing"],["Who","Media target and media context are filled in, separate from the strategic target"],["Who","Insight has a tension, and the motivation causes it"],["What","One benefit, and every reason to believe proves it"],["What","Mandatories are real requirements, and there are 3 to 5 criteria for judging the work"],["What","Level of the ask stated: platform, activation or execution"],["How","Timing: kickoff meets the work type and channel minimums, and studio needs are stated"],["How","RACI names who's responsible and accountable"],["How","No TBDs left"]];
+$("readyList").innerHTML = READY.map(function(r, i){ return '<li><label for="rc' + i + '"><input type="checkbox" id="rc' + i + '"' + "" + '><span>' + esc(r[1]) + '<small>' + r[0] + '</small></span></label></li>'; }).join("");
+function renderReady(){
+  var n = 0; READY.forEach(function(r, i){ if ($("rc" + i).checked) n++; });
+  $("readyN").textContent = n + " of " + READY.length;
+  $("readyBar").style.width = (n / READY.length * 100) + "%";
+  $("readyMeter").className = "meter" + (n === READY.length ? " done" : "");
+  $("readyTitle").textContent = n === READY.length ? "Ready to send Friday at noon." : (READY.length - n) + " to go before it's ready.";
+}
+$("readyList").addEventListener("change", renderReady);
+$("readyReset").addEventListener("click", function(){ READY.forEach(function(r, i){ $("rc" + i).checked = false; }); renderReady(); });
+renderReady();
+
+/* ---------- Worked example ---------- */
+var EX = [
+ ["Get / To / By","",'<div><b>Get</b> busy dinner deciders who haven\'t tried Meal Simple</div><div><b>To</b> see Meal Simple as a real dinner, not a shortcut</div><div><b>By</b> showing it makes the 5 o\'clock decision for them</div>'],
+ ["Desired behavior","Why","Reframe Meal Simple from a shortcut to a way of taking care of my family on a busy night."],
+ ["Background","Why","Weeknight dinner gets decided every night, and we lose it to takeout, delivery and \"the usual.\" Shoppers trust H-E-B, but Meal Simple isn't top of mind at 4:30."],
+ ["Objectives","Why","<div>Business: Meal Simple sales +[10]% vs. last year, FY27</div><div>Marketing #1: +[5]% first-time buyers among the target, Mar to May</div><div>Marketing #2: [25]% of first-time buyers buy again within 30 days</div><div>Perception: \"H-E-B makes weeknight dinner easier\" +[5] pts in 12 months</div>"],
+ ["Media context","Why","Value runs Jan to Feb, no impact. Spring seasonal foods runs Mar to May: feature spring meals and combine shoots."],
+ ["Strategic target","Who","Works full time, two kids, shops H-E-B weekly. By 4:30 she has no plan. Anything that feels like a shortcut feels like falling short. Overhearing: the family at the table."],
+ ["Insight","Who","<div>Truth: dinner has to get figured out almost every night.</div><div>Motivation: making a real dinner is how I show my family I care.</div><div>Tension: because it has to be a real dinner, I won't settle for a shortcut, and holding out is what makes 5 o'clock so hard.</div><div><b>One line: \"Wanting to make a real dinner is what makes 5 o'clock so hard.\"</b></div>"],
+ ["Media targets","Who","Texas households of 2+, dual income with kids first. Afternoon and early evening on phones, the drive home, in store and in the app. Spanish versions."],
+ ["Benefit","What","<b>Meal Simple is a real dinner, decided for you.</b>"],
+ ["Reasons to believe","What","Full meals in one spot. Ready in about [20] minutes. Less than takeout for four. Marinated chicken is the top seller."],
+ ["Mandatories","What","Feature the marinated chicken. A real weeknight moment. H-E-B and Meal Simple recognizable in 2 seconds. Spanish versions."],
+ ["Considerations","What","Rotate meals by season. A delivery tag version."],
+ ["How we'll judge it","What","Makes a shortcut feel like caring. She stops worrying about dinner. One message. Works on a phone and at the shelf. Clearly H-E-B."],
+ ["Level of the ask","What","Platform. Executions after it's approved."],
+ ["Studio plan","How","One shoot day, photo and video: hero chicken plus 3 spring meals. Combine with the spring seasonal foods shoot. Hold 3 days at kickoff. Plan B: chicken only plus existing photography."],
+ ["RACI","How","<div>Strategy: MSM responsible, marketing VP accountable.</div><div>Brief: MSM responsible, MSM director accountable, creative strategist and media consulted, creative directors informed.</div><div>Concept: creative directors responsible, marketing VP approves.</div>"],
+ ["Timing","How","Standard, 13 weeks, live March 1. A signage prototype needs 18 weeks, so it either moves to summer or uses existing fixtures."]
+];
+$("exampleBrief").innerHTML = EX.map(function(r){ return '<div class="brow"><div class="k">' + r[0] + (r[1] ? '<small>' + r[1] + '</small>' : '') + '</div><div class="v">' + r[2] + '</div></div>'; }).join("");
+
+/* ---------- Prompts ---------- */
+var COPILOT_URL = "https://m365.cloud.microsoft/chat/?titleId=T_7ce09a41-97bb-7c67-d3f8-12c1f6e7a83c", GEMINI_URL = "https://vertexaisearch.cloud.google.com/us/home/cid/ebeafb7e-ccd4-43fc-89d3-b08fbe970a20/r/agent/10616432050490371605/session/-";
+[["geminiLink","geminiNote",GEMINI_URL,"Opens in Gemini Enterprise."]].forEach(function(x){ var l = $(x[0]); if (x[2]) { l.href = x[2]; $(x[1]).textContent = x[3]; } else { l.classList.add("off"); l.setAttribute("aria-disabled","true"); l.addEventListener("click", function(e){ e.preventDefault(); }); } });
+if (COPILOT_URL) { $("copilotLink").href = COPILOT_URL; $("copilotNote").textContent = "Opens in Microsoft 365 Copilot."; }
+else { $("copilotLink").setAttribute("aria-disabled","true"); $("copilotLink").classList.add("off"); $("copilotLink").addEventListener("click", function(e){ e.preventDefault(); }); }
+document.addEventListener("click", function(e){ var d = e.target.closest("[data-download]"); if (!d) return; var txt = document.getElementById(d.dataset.download).textContent.replace(/<\\\//g,"</").trim(); var url = URL.createObjectURL(new Blob([txt], {type:"text/markdown"})); var a = document.createElement("a"); a.href = url; a.download = d.dataset.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); }, 1000); });
+document.addEventListener("click", function(e){ var b = e.target.closest("[data-copy]"); if (!b) return; copyText(document.getElementById(b.dataset.copy).textContent.replace(/<\\\//g,"</").trim(), "toastAgent"); });
+var PROMPTS = ["You're the creative director receiving this brief. What's missing, and what questions would you ask before starting?","Score each section of this brief as pass, fix or missing. Ask questions, don't rewrite.","Give me the top 3 options for the benefit line, and why each works.","Here's my insight. Does the motivation cause the tension? If not, ask me why until it does.","Write this brief's Get / To / By. If you can't, tell me which field is unclear.","You're the studio lead. What do you need from this brief to hold a shoot date?","Check this concept against the brief's \"how we'll judge the work\" criteria. Point to the brief line for every comment."];
+$("prompts").innerHTML = PROMPTS.map(function(p, i){ return '<div class="prompt"><span class="pn">' + (i+1) + '</span><q>' + esc(p) + '</q><button class="copy" type="button" data-i="' + i + '">Copy</button></div>'; }).join("");
+$("prompts").addEventListener("click", function(e){ var b = e.target.closest("button"); if (b) copyText(PROMPTS[b.dataset.i], "toastPrompt"); });
+
+/* ---------- Rail + router ---------- */
+var chapters = [].slice.call(document.querySelectorAll(".chapter"));
+var current = null;
+var GROUPS = [["Learn",["1"]],["Write it",["2","3","4"]],["Plan it",["5"]],["Review it",["6","7"]],["Reference",["8","9","10"]]];
+function buildRail(){
+  $("railList").innerHTML = GROUPS.map(function(g){
+    return '<li class="grp"><span class="gl">' + g[0] + '</span><ol>' + chapters.filter(function(c){ return g[1].indexOf(c.dataset.n) >= 0; }).map(function(c){
+      var n = c.dataset.n, on = current === n;
+      var subs = on ? '<ol class="subs">' + [].map.call(c.querySelectorAll(".sec,.field"), function(s){
+        var ref = s.id.slice(1).replace("-", ".");
+        return '<li><a href="#ch' + ref.replace(".", "-") + '" data-ref="' + ref + '">' + esc(s.dataset.t) + '</a></li>';
+      }).join("") + '</ol>' : "";
+      return '<li><a class="ch" href="#ch' + n + '"' + (on ? ' aria-current="page"' : '') + '><span>' + c.dataset.t + (c.dataset.partial ? ' <em>partial</em>' : '') + '</span></a>' + subs + '</li>';
+    }).join("") + '</ol></li>';
+  }).join("");
+}
+function closeRail(){ document.body.classList.remove("rail-open"); $("railBtn").setAttribute("aria-expanded", "false"); }
+$("railBtn").addEventListener("click", function(){ var o = document.body.classList.toggle("rail-open"); this.setAttribute("aria-expanded", o); });
+document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeRail(); });
+document.addEventListener("click", function(e){ if (document.body.classList.contains("rail-open") && !e.target.closest(".rail") && !e.target.closest("#railBtn")) closeRail(); });
+
+function addNext(c){
+  if (c.querySelector(".next")) return;
+  var i = chapters.indexOf(c), prev = chapters[i-1], nx = chapters[i+1], h = '<nav class="next" aria-label="Chapter">';
+  if (prev) h += '<a href="#ch' + prev.dataset.n + '">Previous<b>' + prev.dataset.n + ' ' + prev.dataset.t + '</b></a>';
+  if (nx) h += '<a class="fwd" href="#ch' + nx.dataset.n + '">Next<b>' + nx.dataset.n + ' ' + nx.dataset.t + '</b></a>';
+  c.insertAdjacentHTML("beforeend", h + '</nav>');
+}
+function route(){
+  var raw = location.hash.replace(/^#/, ""), mm = /^ch(\d+)(?:-(\d+))?$/.exec(raw);
+  closeRail();
+  if (!mm) { document.body.classList.remove("in-book"); current = null; document.title = "Brief Builder"; window.scrollTo(0, 0); return; }
+  var parts = [mm[1], mm[2]], n = parts[0], ch = $("ch" + n);
+  if (!ch) { location.hash = "#start"; return; }
+  if (n === "2" && parts[1] && !$("s2-" + parts[1])) { renderFields("All"); [].forEach.call($("fgFilter").children, function(x, i){ x.setAttribute("aria-pressed", i === 0); }); }
+  document.body.classList.add("in-book");
+  chapters.forEach(function(c){ c.classList.toggle("on", c === ch); });
+  if (current !== n) { current = n; buildRail(); addNext(ch); }
+  document.title = n + " " + ch.dataset.t.replace("&amp;", "&") + ", Brief Builder";
+  var target = parts[1] ? $("s" + n + "-" + parts[1]) : null;
+  if (target && target.classList.contains("extra") && !ch.classList.contains("show-extra")) { var mb = ch.querySelector(".more-btn"); if (mb) mb.click(); }
+  if (target) { requestAnimationFrame(function(){ target.scrollIntoView(); }); markSub(n + "." + parts[1]); }
+  else { window.scrollTo(0, 0); $("main").focus({preventScroll:true}); }
+}
+document.addEventListener("click", function(e){
+  var b = e.target.closest(".more-btn"); if (!b) return;
+  var c = $("ch" + b.dataset.ch), open = !c.classList.contains("show-extra");
+  c.classList.toggle("show-extra", open); b.setAttribute("aria-expanded", open);
+  b.firstChild.nodeValue = open ? "Show less" : b.dataset.label;
+});
+[].forEach.call(document.querySelectorAll(".more-btn"), function(b){ b.dataset.label = b.textContent; });
+function markSub(ref){ [].forEach.call(document.querySelectorAll(".subs a"), function(a){ a.classList.toggle("on", a.dataset.ref === ref); }); }
+window.addEventListener("hashchange", route);
+// track section in view
+var ticking = false;
+window.addEventListener("scroll", function(){
+  if (ticking || !current) return; ticking = true;
+  requestAnimationFrame(function(){
+    ticking = false;
+    var secs = document.querySelectorAll("#ch" + current + " .sec, #ch" + current + " .field"), ref = null;
+    [].forEach.call(secs, function(s){ if (s.offsetParent && s.getBoundingClientRect().top < 160) ref = s.id.slice(1).replace("-", "."); });
+    markSub(ref);
+  });
+}, {passive:true});
+route();
+})();
+
+
+/* ---------- Section references become links ---------- */
+(function(){
+  var SKIP = "a,button,script,style,textarea,select,label,header,h1,h2,h3,.sn,.pick,.prompt";
+  var RE = /(\b(?:See|see|in|Check|check)\s)(?:chapter\s(\d{1,2})\b|(\d{1,2})\.(\d{1,2})\b)|\((\d{1,2})\.(\d{1,2})\)/g;
+  function exists(c, s){ if (!document.getElementById("ch" + c)) return false; if (!s) return true; return !!document.getElementById("s" + c + "-" + s) || (c === "2" && +s >= 1 && +s <= 17); }
+  function link(root){
+    var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), nodes = [], n;
+    while ((n = w.nextNode())) { if (n.parentElement && !n.parentElement.closest(SKIP) && RE.test(n.nodeValue)) nodes.push(n); RE.lastIndex = 0; }
+    nodes.forEach(function(t){
+      var s = t.nodeValue, frag = document.createDocumentFragment(), last = 0, m;
+      RE.lastIndex = 0;
+      while ((m = RE.exec(s))) {
+        var c, sec, lead = "", label, href;
+        if (m[5]) { c = m[5]; sec = m[6]; } else { lead = m[1]; c = m[2] || m[3]; sec = m[2] ? null : m[4]; }
+        if (!exists(c, sec)) continue;
+        href = "#ch" + c + (sec ? "-" + sec : "");
+        frag.appendChild(document.createTextNode(s.slice(last, m.index) + (m[5] ? "(" : lead)));
+        var a = document.createElement("a"); a.className = "xref"; a.href = href;
+        a.textContent = m[5] ? c + "." + sec : (m[2] ? "chapter " + c : c + "." + sec);
+        frag.appendChild(a);
+        if (m[5]) frag.appendChild(document.createTextNode(")"));
+        last = m.index + m[0].length;
+      }
+      if (!last) return;
+      frag.appendChild(document.createTextNode(s.slice(last)));
+      t.parentNode.replaceChild(frag, t);
+    });
+  }
+  document.querySelectorAll(".chapter").forEach(link);
+  var fl = document.getElementById("fieldList");
+  if (fl) new MutationObserver(function(){ link(fl); }).observe(fl, {childList:true});
+})();
+
+/* ---------- Styled dropdowns and date pickers ---------- */
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var openPick = null;
+  function closeAll(){ if (openPick){ openPick.classList.remove("open"); openPick.querySelector(".pick-btn").setAttribute("aria-expanded","false"); openPick = null; } }
+  document.addEventListener("click", function(e){ if (openPick && !openPick.contains(e.target)) closeAll(); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape" && openPick){ var b = openPick.querySelector(".pick-btn"); closeAll(); b.focus(); } });
+
+  function enhance(sel){
+    if (sel.closest(".pick")) return;
+    var wrap = document.createElement("span"); wrap.className = "pick";
+    sel.parentNode.insertBefore(wrap, sel); wrap.appendChild(sel);
+    sel.tabIndex = -1; sel.setAttribute("aria-hidden","true");
+    var btn = document.createElement("button"); btn.type = "button"; btn.className = "pick-btn";
+    btn.setAttribute("aria-haspopup","listbox"); btn.setAttribute("aria-expanded","false");
+    var lab = document.querySelector('label[for="' + sel.id + '"]') || sel.closest("label");
+    var labText = lab ? (lab.querySelector("span") ? lab.querySelector("span").textContent : lab.textContent) : "";
+    btn.setAttribute("aria-label", labText.trim());
+    var txt = document.createElement("span"); var chev = document.createElement("span"); chev.className = "chev";
+    btn.appendChild(txt); btn.appendChild(chev); wrap.appendChild(btn);
+    var menu = document.createElement("ul"); menu.className = "pick-menu"; menu.setAttribute("role","listbox"); wrap.appendChild(menu);
+    var active = -1;
+    function sync(){ var o = sel.options[sel.selectedIndex]; txt.textContent = o ? o.text : ""; }
+    function build(){
+      menu.innerHTML = "";
+      [].forEach.call(sel.options, function(o, i){
+        var li = document.createElement("li"); li.setAttribute("role","option"); li.textContent = o.text;
+        li.setAttribute("aria-selected", i === sel.selectedIndex ? "true" : "false");
+        li.addEventListener("click", function(e){ e.stopPropagation(); choose(i); });
+        li.addEventListener("mousemove", function(){ setActive(i); });
+        menu.appendChild(li);
+      });
+    }
+    function setActive(i){ var items = menu.children; if (!items.length) return; active = (i + items.length) % items.length; [].forEach.call(items, function(li, j){ li.classList.toggle("act", j === active); }); items[active].scrollIntoView({block:"nearest"}); }
+    function choose(i){ if (i !== sel.selectedIndex){ sel.selectedIndex = i; sel.dispatchEvent(new Event("input",{bubbles:true})); sel.dispatchEvent(new Event("change",{bubbles:true})); } sync(); closeAll(); btn.focus(); }
+    function open(){ closeAll(); build(); wrap.classList.add("open"); btn.setAttribute("aria-expanded","true"); openPick = wrap; setActive(Math.max(0, sel.selectedIndex)); }
+    btn.addEventListener("click", function(e){ e.stopPropagation(); if (wrap.classList.contains("open")) closeAll(); else open(); });
+    btn.addEventListener("keydown", function(e){
+      var isOpen = wrap.classList.contains("open");
+      if (e.key === "ArrowDown" || e.key === "ArrowUp"){ e.preventDefault(); if (!isOpen) open(); else setActive(active + (e.key === "ArrowDown" ? 1 : -1)); }
+      else if ((e.key === "Enter" || e.key === " ") && isOpen){ e.preventDefault(); choose(active); }
+      else if (e.key === "Tab" && isOpen){ closeAll(); }
+    });
+    sel.addEventListener("change", sync);
+    new MutationObserver(sync).observe(sel, {childList:true});
+    sync();
+    sel._pickSync = sync;
+  }
+
+  function enhanceDate(inp){
+    if (inp.closest(".datef")) return;
+    var wrap = document.createElement("span"); wrap.className = "datef";
+    inp.parentNode.insertBefore(wrap, inp); wrap.appendChild(inp);
+    inp.tabIndex = -1; inp.setAttribute("aria-hidden","true");
+    var btn = document.createElement("button"); btn.type = "button"; btn.className = "date-btn";
+    var lab = inp.closest("label"); var labText = lab && lab.querySelector("span") ? lab.querySelector("span").textContent : "Date";
+    btn.setAttribute("aria-label", labText + ", choose a date");
+    var txt = document.createElement("span");
+    btn.appendChild(txt);
+    btn.insertAdjacentHTML("beforeend", '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>');
+    wrap.appendChild(btn);
+    function sync(){
+      if (!inp.value){ txt.textContent = "Pick a date"; return; }
+      var p = inp.value.split("-"), d = new Date(+p[0], +p[1]-1, +p[2]);
+      txt.textContent = d.toLocaleDateString("en-US", {weekday:"short", month:"short", day:"numeric", year:"numeric"});
+    }
+    btn.addEventListener("click", function(){
+      inp.style.pointerEvents = "auto";
+      try { if (inp.showPicker) inp.showPicker(); else inp.focus(); } catch(e){ inp.focus(); }
+      setTimeout(function(){ inp.style.pointerEvents = ""; }, 0);
+    });
+    inp.addEventListener("input", sync); inp.addEventListener("change", sync);
+    sync();
+    inp._dateSync = sync;
+  }
+
+  ["pickTask","pickRole","tlType","tlShoot"].forEach(function(id){ var s = $(id); if (s) enhance(s); });
+  ["tlLive","tlToday"].forEach(function(id){ var i = $(id); if (i) enhanceDate(i); });
+  setTimeout(function(){
+    ["pickTask","pickRole","tlType","tlShoot"].forEach(function(id){ var s = $(id); if (s && s._pickSync) s._pickSync(); });
+    ["tlLive","tlToday"].forEach(function(id){ var i = $(id); if (i && i._dateSync) i._dateSync(); });
+  }, 0);
+})();
+</script>
+<script type="text/plain" id="agentInstr"># Role
+You are Brief Coach for H-E-B Marketing. You help marketers write creative briefs and help anyone give feedback on creative, using H-E-B's LPA brief training. Sound like a friendly senior strategist: plain words, short answers. Explain any term the first time. Never use em dashes or tables.
+
+# Rules
+- The person writes first. Never write a whole brief. Suggest wording for one field at a time, from what they gave you.
+- Use only these notes and what the user gives you. For anything not in these notes, check the attached Brief Builder guide file. If it isn't there either, say "That's not in my notes from the training." Never invent numbers, research or quotes; use [number needed].
+- Grade what's on the page, not what it could become. Call out contradictions inside a field. Praise of H-E-B in general doesn't prove a product benefit.
+- Be encouraging. Name what works before what needs work.
+- Lead with the answer. Keep replies under about 200 words unless asked.
+- Only suggest an improvement after they've written something. Only give a status (Ready to send, Close, Not yet) after reviewing a draft or finishing all fields.
+
+# Modes
+1. Coach me through a brief. Start from whatever they have. For each field, in order: what it's for in one line, the Before and Better example below, then one question. After they answer, suggest one improvement and move on.
+2. Review my brief. One-line verdict, then the three fixes that matter most (field, problem, one question, and the Better example for that field). Offer the full review and the 13 checks; give them only if asked. Write their Get / To / By, or say which field blocks it.
+3. Build an insight: truth, motivation, tension, one line, then the test.
+4. Feedback: Ears, Gut, Head, then CARDS. Turn reactions into objectives and show before and after.
+
+# Fields, with Before and Better (Better examples are from the Meal Simple brief)
+- Get / To / By: who, what we want them to do or believe instead, and the one message that moves them. Before: Get Texans To shop H-E-B more By showing our value. Better: Get busy dinner deciders who haven't tried Meal Simple To see it as a real dinner, not a shortcut By showing it makes the 5 o'clock decision for them.
+- Desired behavior: the belief that changes before what they buy. Before: Get more people to try Meal Simple and grow sales. Better: Reframe Meal Simple from a shortcut to a way of taking care of my family on a busy night.
+- Background: 2 to 3 sentences on today. Before: a paragraph that repeats the brief. Better: We lose weeknight dinner to takeout and "the usual." Shoppers trust H-E-B, but Meal Simple isn't top of mind at 4:30.
+- Objectives: business, marketing, perception, each with a number and date; one primary. Before: awareness, trial, sales, loyalty and engagement all checked. Better: Business: sales +10% FY27. Marketing #1: +5% first-time buyers, Mar to May. Perception: +5 pts in 12 months.
+- Media context: what else H-E-B has in market. Before: blank. Better: Spring seasonal foods runs Mar to May. Feature spring meals.
+- Strategic target: one person and their mindset, plus who's overhearing. Before: Busy Texans 18 to 65+. Better: Works full time, two kids, shops H-E-B weekly. 4:30 and no plan.
+- Insight: see below. Before: I'm busy and want dinner to be easy and tasty. Better: Wanting to make a real dinner is what makes 5 o'clock so hard.
+- Media targets: who the plan reaches; narrows the target, doesn't replace it. Before: All H-E-B markets. Better: Texas households of 2+, dual income with kids first. Afternoon and early evening.
+- Benefit: the one thing to say; "and" means two. Before: convenient, delicious, quality and great value. Better: Meal Simple is a real dinner, decided for you.
+- Reasons to believe: facts that prove that benefit only. Before: H-E-B is a great Texas company. Better: Full meals in one spot. Ready in about 20 minutes. Less than takeout.
+- Mandatories: true requirements; nice-to-haves go in considerations. Before: Make it stand out but keep it familiar. Better: Feature the marinated chicken. Recognizable in 2 seconds. Spanish versions.
+- Considerations: options creative can weigh. Before: Products and offers TBD. Better: Rotate meals by season. A delivery tag version.
+- How we'll judge the work: 3 to 5 criteria. Before: We'll know it when we see it. Better: Makes a shortcut feel like caring. One message. Works on a phone and at the shelf. Clearly H-E-B.
+- Level of the ask: platform (big idea), activation (a channel or moment) or execution (the asset). If the idea is decided, it's an execution brief. Better: Platform. Executions after it's approved.
+- Studio plan: photo or video, shoot window, decided versus open. Before: nothing until the concept is sold. Better: Photo and video in one day. Hold 3 days at kickoff. Plan B: hero product plus existing photography.
+- RACI: Responsible, Accountable, Consulted, Informed. Before: everyone in the meeting. Better: MSM responsible, MSM director accountable, creative strategist and media consulted, creative directors informed.
+- Timing: work type and live date. TV can need more time than the work type. Before: Spring, dates TBD. Better: Standard, 13 weeks. Live March 1.
+
+# Insights
+Truth (what they believe, want or feel), motivation (the real why), tension (the problem they can't solve, usually with a "but"). A fact is what shoppers do; an insight is why it's hard for them. Test: take the motivation away; if the problem goes away too, the motivation causes the tension and it passes. Shopper's voice (I, my), no brand, one line under 20 words.
+
+# 13 checks
+1 Get / To / By matches the fields. 2 Behavior is a belief shift. 3 Background 2 to 3 sentences. 4 One primary objective; all have a number and date. 5 One-person target plus who's overhearing. 6 Media target and context filled in. 7 Insight has a tension the motivation causes. 8 One benefit; every reason proves it. 9 Real mandatories; 3 to 5 judging criteria. 10 Level of ask stated. 11 Timing and studio needs stated. 12 R and A named. 13 No TBDs.
+Briefs go out Friday at noon; kickoff is the next Thursday.
+
+# Feedback
+Ears (is it clear, what does the agency recommend), Gut (write your first reaction and why), Head (does it deliver the brief). CARDS: Connects (opens the mind or heart of the target), Amplifiable (travels across channels), Recognizable (people know it's H-E-B; weak branding is fixed in execution), Distinctive (stands apart from the category), Simple (gets through in a split second). Say what the work must accomplish, not how. Statements, not questions. Tie every comment to the brief; if it can't be, it's probably taste. Three improvements max. Share concerns in the room. R speaks first, Cs build, A decides. If the strategy changes, pause feedback and update the brief.
+</script>
+<script type="text/plain" id="agentGuide"># Brief Builder: full guide
+
+The H-E-B Brief Builder site as text, built from the LPA two-day brief and feedback training. Anything marked proposed is not confirmed yet.
+
+# How a brief works
+Marketing owns the problem. Creative owns the answer, at the level that was asked for. The brief is where the two meet.
+Key point: Agree on the problem before anyone works on the answer.
+
+## 1.1 What a brief is for
+The brief is the problem. Everything after it is an answer.
+
+If two people read the brief and come away with two different problems, it needs another pass.
+
+## 1.2 Get / To / By
+The whole brief in three lines. If they're hard to write, the brief probably needs a little more focus.
+
+Write these before anything else. Every field after this backs up one of the three lines.
+
+Get
+
+Who you're talking to, and what they do or believe today.
+
+Ask: who exactly, and what's in the way?
+To
+
+What you want them to do or believe instead.
+
+Ask: what changes in their head, not just their cart?
+By
+
+The one message that moves them. It's the strategy, not the creative idea.
+
+Ask: what would make them believe it?
+
+EXAMPLE
+
+Get
+busy dinner deciders who haven't tried Meal Simple
+To
+see Meal Simple as a real dinner, not a shortcut
+By
+showing it makes the 5 o'clock decision for them
+
+Meal Simple is H-E-B's line of ready-to-cook meals. It's the brief the training worked through, and the example used across this site.
+
+## 1.3 The level of the ask
+Say which level creative is being asked for.
+
+Platform
+The one big idea everything else is checked against.
+Activation
+How the platform shows up in a channel or a moment.
+Execution
+The specific asset: format, size, shot.
+
+If the idea is already decided (a mascot, a bracket), call it an execution brief. Try not to use "idea" and "concept" as separate levels. Most of the industry uses them to mean the same thing.
+
+## 1.4 The weekly rhythm
+Briefs go out by Friday at noon. Kickoff is the following Thursday.
+
+There's no separate discovery meeting, so the brief does that job.
+
+## 1.5 One person, plus who's overhearing
+Write to one person you can picture. Everyone else the media reaches is overhearing.
+
+The work should make sense to them, but it isn't written for them. A recent H-E-B brief put it this way: talk to the insiders, and let everyone else overhear.
+
+Broad reach can be right for media. The creative target is still one person.
+
+## 1.6 The brief is the referee
+Every comment in review points back to a line in the brief.
+
+If it can't, it's probably taste rather than feedback.
+
+## 1.7 If the strategy changes
+The brief gets rewritten and creative development restarts. Changing the strategy in a comment round is how work goes sideways.
+
+
+# Field guide
+Every field in the brief: what it's for, a before and after, and what to watch for. The "better" examples come from the Meal Simple rewrite.
+Key point: One person, one message, one primary objective.
+
+## 2.1 Get / To / By
+The whole brief in three lines: who you're talking to, what you want them to do or believe, and the message that gets them there.
+
+Before
+Get Texans To shop H-E-B more By showing our value.
+Better
+Get busy dinner deciders who haven't tried Meal Simple To see it as a real dinner By showing it makes the 5 o'clock decision for them.
+Watch for
+Each line should match a field below. Get matches the target, To matches the desired behavior, and By matches the benefit.
+
+## 2.2 Desired consumer behavior
+The change in what the shopper believes, before they change what they buy.
+
+Before
+Get more people to try Meal Simple and grow sales.
+Better
+Reframe Meal Simple from a shortcut to a way of taking care of my family on a busy night.
+Watch for
+"Buy more" is an objective, not a behavior. Ask what they'd have to believe first. Come back to this after you write the insight, ideally with the creative strategist.
+
+## 2.3 Background
+Two or three sentences on what's happening today.
+
+Before
+A paragraph that repeats the rest of the brief.
+Better
+We lose weeknight dinner to takeout and "the usual." Shoppers trust H-E-B, but Meal Simple isn't top of mind at 4:30.
+Watch for
+If a sentence belongs in another field, move it there. Saying the same thing twice in different words confuses people.
+
+## 2.4 Objectives
+Three goals: one for the business, one for marketing and one for perception. Each gets a number and a date.
+
+Before
+Awareness, trial, sales, loyalty and engagement all checked.
+Better
+Business: sales +10% FY27. Marketing #1: +5% first-time buyers, Mar to May. Perception: +5 pts in 12 months.
+Watch for
+Pick one primary marketing objective. Perception takes 6 months or more to move. Bring these numbers to the post-mortem.
+
+## 2.5 Media context
+What else H-E-B has in market at the same time.
+
+Before
+Blank.
+Better
+Spring seasonal foods runs Mar to May. Feature spring meals.
+Watch for
+Ask the media team what else is running. It also shows where shoots can be combined.
+
+## 2.6 Strategic target
+One person, described well enough to picture, and what's on their mind.
+
+Before
+Busy Texans 18 to 65+.
+Better
+Works full time, two kids, shops H-E-B weekly. 4:30 and no plan.
+Watch for
+Also name who's overhearing: people who'll see the work but aren't the target. See 1.5.
+
+## 2.7 Insight
+Why the shopper is stuck: what they want, why it matters, and what gets in the way.
+
+Before
+I'm busy and want dinner to be easy and tasty.
+Better
+Wanting to make a real dinner is what makes 5 o'clock so hard.
+Watch for
+If the tension has no "but," it may not be an insight yet. The strongest ones are where the motivation causes the tension. Build yours in 3.4.
+
+## 2.8 Media targets
+Who the media plan reaches, and when.
+
+Before
+All H-E-B markets.
+Better
+Texas households of 2+, dual income with kids first. Afternoon and early evening.
+Watch for
+This narrows the strategic target. It doesn't replace it. Ask the media team for their brief.
+
+## 2.9 Benefit
+The one thing the work has to say.
+
+Before
+Convenient, delicious, quality and great value.
+Better
+Meal Simple is a real dinner, decided for you.
+Watch for
+One message. If you need the word "and," you have two. See 4.2.
+
+## 2.10 Reasons to believe
+Facts that prove the benefit. Keep them focused on that one benefit.
+
+Before
+H-E-B is a great Texas company.
+Better
+Full meals in one spot. Ready in about 20 minutes. Less than takeout.
+Watch for
+Read each one right after the benefit. If it doesn't prove it, it can probably go.
+
+## 2.11 Mandatories
+Things the work must include. Keep it to true requirements.
+
+Before
+Make it stand out but keep it familiar.
+Better
+Feature the marinated chicken. Recognizable in 2 seconds. Spanish versions.
+Watch for
+Nice-to-haves belong in considerations. A long list of mandatories can decide the idea before creative starts.
+
+## 2.12 Considerations
+Options creative can weigh, but doesn't have to use.
+
+Before
+Products and offers TBD.
+Better
+Rotate meals by season. A delivery tag version.
+Watch for
+Some of these change the studio schedule, like one shoot or four. Settle those at kickoff.
+
+## 2.13 How we'll judge the work
+Three to five things the work will be reviewed against.
+
+Before
+We'll know it when we see it.
+Better
+Makes a shortcut feel like caring. One message. Works on a phone and at the shelf. Clearly H-E-B.
+Watch for
+Without these, feedback turns into personal taste.
+
+## 2.14 Level of the ask
+Whether you're asking for a platform, an activation or an execution.
+
+Before
+A "concept" brief with the idea already decided.
+Better
+Platform. Executions after it's approved.
+Watch for
+If the idea is already decided, call it an execution brief. See 1.3.
+
+## 2.15 Studio plan
+What the studio needs to hold time: photo or video, the shoot window, and what's decided versus still open.
+
+Before
+Nothing until the concept is sold.
+Better
+Photo and video in one day. Hold 3 days at kickoff. Plan B: hero product plus existing photography.
+Watch for
+Nobody knows the final shots at kickoff. Hold studio time anyway, and size it at concept review.
+
+## 2.16 RACI
+Who's Responsible, Accountable, Consulted and Informed at each stage.
+
+Before
+Everyone in the meeting.
+Better
+Brief: MSM responsible, MSM director accountable, creative strategist and media consulted, creative directors informed.
+Watch for
+If the strategy changes, rewrite the brief and start creative over. See 1.7.
+
+## 2.17 Timing
+The work type, the live date, and the dates that follow from them.
+
+Before
+Spring, dates TBD.
+Better
+Standard, 13 weeks. Live March 1. Kickoff by Dec 1.
+Watch for
+Channels like TV can need more time than the work type. Check 5.3, or use the calculator in 5.1.
+
+
+# Insight builder
+An insight is a truth, the motivation behind it, and the tension it creates. Shoppers won't hand you one. You build it by watching what they do and asking why.
+Key point: A fact is what shoppers do. An insight is why it's hard for them.
+
+## 3.1 The formula
+Every insight has three parts. Most insights that fall flat stop at the first one.
+
+Truth
+
+What the shopper believes, wants or feels.
+
+Ask: what do they do, or say they want?
+Motivation
+
+The real reason why it matters to them.
+
+Ask: why? Then ask again.
+Tension
+
+The contradiction or problem they can't solve on their own.
+
+Ask: where does that motivation get in their way?
+
+## 3.2 The test
+A tension on its own is just a problem. A strong insight goes one step further: the thing they want is what causes the problem.
+
+That's what makes it feel true to the shopper, and it gives creative something real to solve.
+
+Read the motivation.
+What do they want, and why?
+Read the tension.
+What problem are they stuck with?
+Take the motivation away.
+If the problem goes away too, the motivation causes the tension. It passes.
+
+## 3.3 Examples
+Meal Simple Proposed rewrite
+
+MOTIVATION
+A real dinner is how I show my family I care.
+
+TENSION
+I won't settle for a shortcut, so 5 o'clock is hard every night.
+
+THE IDEA
+“Wanting to make a real dinner is what makes 5 o'clock so hard.”
+
+Joe V's Full Cart H-E-B brief, tension proposed
+
+MOTIVATION
+A full cart is how I know I did right by my family.
+
+TENSION
+Every trip, the budget decides how full it gets.
+
+Cowboys tailgate H-E-B brief
+
+MOTIVATION
+Being a fan is part of our family's identity.
+
+TENSION
+Every tailgate feels like a responsibility.
+
+Dog bed
+
+MOTIVATION
+I'll do anything to keep my dog happy, so she sleeps in my bed.
+
+TENSION
+I don't sleep.
+
+THE IDEA
+You're really buying a bigger bed for you.
+
+Jim Beam
+
+MOTIVATION
+No commute. That was the upside of working from home.
+
+TENSION
+Nothing tells me to stop working.
+
+THE IDEA
+Reclaim 6 to 7 as the happiest hour.
+
+LPA's own Meal Simple line, for comparison: "Making dinner isn't always the hard part. Figuring out dinner is."
+
+
+# Objectives
+Three levels, each with a number and a date. Perception moves marketing, and marketing moves the business. The number gives magnitude, and magnitude gives creative direction.
+Key point: Every objective gets a number and a date.
+
+## 4.1 Three levels
+Perception
+What people think. Moves slowly, often 6 to 12 months.
+Marketing
+What people do. The lever. Pick one primary.
+Business
+The result: sales, share, growth.
+Every objective gets a number and a date.
+Say when you expect perception to move.
+Bring the objectives to the post-mortem.
+Bring the timing too: did the job get the weeks its work type called for? (Proposed)
+
+## 4.2 One message
+One message gets close to 40% recall. By the fourth message, recall is around 9%.
+
+As quoted in the session. Check against the Kantar source before using it outside training.
+
+
+# Timeline & studio
+Pick the work type, the channels and the live date. You get the brief deadline, kickoff, and every studio checkpoint between them. The longest channel sets the clock.
+Key point: The longest channel sets the clock. Add TV and you need 20 weeks, whatever the work type.
+
+## 5.2 Work types
+Work type	Weeks before live
+Marquee	24
+Extended, with TV	20
+Standard	13
+Express	11
+Revision	7
+Exact pickup	1 to 5
+
+## 5.3 Channel minimums
+Some channels need more time than the work type gives you. The longer one wins.
+
+TV
+20 weeks
+Signage prototype
+18 weeks
+OOH
+13 weeks
+Standard job
+13 weeks
+
+Example: a Standard job is 13 weeks. Add TV and it runs on TV's 20 weeks instead.
+
+## 5.4 The studio line
+Hold studio time at kickoff. Size it at concept review. Confirm or release it at approval.
+
+7 to 9 weeks before the shoot
+Kitchen booked
+Add about 4 weeks for location or casting.
+4 weeks before
+Crew booked
+Photo, video or both decides which crew.
+2 weeks before
+Pre-pro
+Shot list, props and food styling locked.
+Shoot
+About 6 weeks before live
+9 weeks on a Marquee job.
+
+HOW MUCH TIME TO HOLD
+
+Marquee
+About 1 week
+Standard
+About 3 days
+Express
+1 to 2 days
+
+A released hold costs nothing.
+
+The shoot feeds every channel, so the earliest channel deadline sets the studio clock. Agree on a Plan B on day one.
+
+## 5.5 Levers when it slips
+Slips are normal, so plan for them. When you ask for more time or money, name the one lever you're pulling.
+
+Scope down
+Fewer meals, fewer cuts, one hero.
+Pay
+Overtime or outside crew. Say what it costs.
+Trade
+Something else on the studio calendar moves. Say what.
+Flight it
+Launch with existing assets, add new ones later.
+Move the date
+The cleanest option when the work matters most.
+
+Name the cost in people's time, not only budget: hours, what gets bumped, the risk.
+
+
+# Ready to send
+Thirteen checks before the Friday noon send. Tick each one as your brief meets it.
+Key point: When every box is ticked, you're ready to send.
+
+## 6.1 The checklist
+1. Get / To / By fits in three lines and matches the fields
+2. Desired behavior is a shift in belief, not a sales goal
+3. Background is 2 to 3 sentences, nothing repeated
+4. One primary objective, and every objective has a number and a date
+5. Strategic target is one person, with who's overhearing
+6. Media target and media context are filled in, separate from the strategic target
+7. Insight has a tension, and the motivation causes it
+8. One benefit, and every reason to believe proves it
+9. Mandatories are real requirements, and there are 3 to 5 criteria for judging the work
+10. Level of the ask stated: platform, activation or execution
+11. Timing: kickoff meets the work type and channel minimums, and studio needs are stated
+12. RACI names who's responsible and accountable
+13. No TBDs left
+
+# Giving feedback
+Separate the idea from the execution. Check the work against the brief, and trust your gut.
+Key point: Give feedback as objectives, not directives. Say what needs to change, not how to change it.
+
+## 7.1 Ears, gut, head
+Listen first, react second, analyze third. Then speak.
+
+Ears
+
+Is the idea clear? What does the agency recommend?
+
+Just listen for now. Fixing comes later.
+Gut
+
+Write down your first reaction and one line on why.
+
+Analysis makes you forget it, and a gut reaction is how shoppers see the work. Watching video? Write it down after the first play, before anyone replays it.
+Head
+
+Does it deliver the brief?
+
+Then check it against CARDS (7.2).
+
+## 7.2 CARDS
+Five checks for the head step. They help you explain your gut, not replace it.
+
+C
+Connects
+Opens the mind or the heart of the target. Not you, them.
+A
+Amplifiable
+The idea can travel across channels and keep going.
+R
+Recognizable
+People know it's us. A good idea with weak branding is fixed in execution, not thrown out.
+D
+Distinctive
+Stands apart from the category. Not so different it stops looking like H-E-B.
+S
+Simple
+Gets through in a split second.
+
+## 7.3 Objectives, not directives
+Say what you want the work to accomplish, not how to do it.
+
+Comments that help
+Clear point of view, tied to the brief. Short. Honest. If you don't love it, it's okay to say so.
+Comments that miss
+Too many, not ranked, or vague. Buzzwords. Personal taste with no reason. "Frankenstein" requests that bolt options together.
+
+Make statements, not questions. A question makes the team guess what you think.
+
+Leave visual solutions to the creative team. It's fine to ask whether one element could come across from another option.
+
+## 7.4 In the meeting
+Start with the option you prefer and say why.
+Keep it to three improvements, the ones that matter most.
+Skip options you don't want to move forward, unless the agency recommended one. Then say why you disagree.
+If someone already made your point, just say "I agree" and move on.
+Early rounds are about the idea. Save execution notes for later rounds.
+
+Speak to an option you didn't pick when: the agency preferred it, you're the A or a C and see it differently from what was said, or it has something you want carried into the chosen idea.
+
+When the work misses: be clear and kind, and skip the compliment sandwich. Check whether the brief or the context changed. Bring a copy of the brief.
+
+Show your real reaction in the room. Share concerns in the room, not in a list afterward.
+
+## 7.5 Who speaks, and when
+Roles come from the RACI: Responsible, Accountable, Consulted, Informed. See 2.16, or the glossary.
+
+The R goes first. That's the responsible person, usually the most junior commenter. Up to five minutes to organize thoughts, not to decide what they think.
+Cs build on it. Give input, and still state a view and a recommendation. If the agency says "both," ask which one they'd pick.
+The A listens to all of it, settles conflicts between Cs, and gives clear direction. LPA recommends the A attend the first creative presentation to avoid extra meetings and "telephone."
+The A can hand off to the R after the first stage.
+Keep the room small. Cs can leave once they've given feedback.
+Summarize after. Ideally the creative side writes the recap and the A confirms it, so both sides agree on what was said.
+Open at H-E-B. There's no written rule for who the A is by project type, and the A often doesn't see the work until a later round. The training group's next step: name the RACI at kickoff and pilot the A in the first presentation on one large project. See the RACI field (2.16) and the checklist (6.1).
+
+## 7.6 Three ways to run it
+Method	How it works	Use it when
+Direct	Creatives, R, Cs and A in one room. A spokesperson sums up where people disagree.	The default. LPA calls it the ideal.
+Huddle	Presentation, a huddle in another room, then feedback from one spokesperson. Roughly 20 minutes each, timing not confirmed.	Many commenters, junior commenters, or many options.
+Delayed	Feedback sent after the meeting.	Last resort. Creatives miss your reaction and it adds days.
+
+Managers: prep junior commenters before the meeting, model objective-based feedback in it, and debrief after.
+
+## 7.7 Production counts
+Talent cost and shoot timing are valid creative feedback. Say them early, when they can still shape the idea.
+
+## 7.8 When the strategy shifts
+If the strategy changes, pause the feedback and update the brief first.
+
+Big shift
+Rewrite the brief and re-brief the team. Then leaders decide the timing.
+Small change
+Check it against the brief before it goes into a comment round.
+Keeps happening
+Usually it's people outside the RACI weighing in late. That's a sign to fix the brief process, not the work. See 1.7.
+
+
+# Examples
+One brief fully rewritten, and desired behaviors from the training.
+Key point: Start with the Meal Simple rewrite. It shows every field done well.
+
+## 8.1 Meal Simple, rewritten
+The original had five goals in one box, everyone as the target, an insight with no tension, four messages, mandatories that contradicted each other, and every channel checked. Here's the rewrite.
+
+Get / To / By
+Get busy dinner deciders who haven't tried Meal Simple
+To see Meal Simple as a real dinner, not a shortcut
+By showing it makes the 5 o'clock decision for them
+Desired behavior
+Why
+Reframe Meal Simple from a shortcut to a way of taking care of my family on a busy night.
+Background
+Why
+Weeknight dinner gets decided every night, and we lose it to takeout, delivery and "the usual." Shoppers trust H-E-B, but Meal Simple isn't top of mind at 4:30.
+Objectives
+Why
+Business: Meal Simple sales +[10]% vs. last year, FY27
+Marketing #1: +[5]% first-time buyers among the target, Mar to May
+Marketing #2: [25]% of first-time buyers buy again within 30 days
+Perception: "H-E-B makes weeknight dinner easier" +[5] pts in 12 months
+Media context
+Why
+Value runs Jan to Feb, no impact. Spring seasonal foods runs Mar to May: feature spring meals and combine shoots.
+Strategic target
+Who
+Works full time, two kids, shops H-E-B weekly. By 4:30 she has no plan. Anything that feels like a shortcut feels like falling short. Overhearing: the family at the table.
+Insight
+Who
+Truth: dinner has to get figured out almost every night.
+Motivation: making a real dinner is how I show my family I care.
+Tension: because it has to be a real dinner, I won't settle for a shortcut, and holding out is what makes 5 o'clock so hard.
+One line: "Wanting to make a real dinner is what makes 5 o'clock so hard."
+Media targets
+Who
+Texas households of 2+, dual income with kids first. Afternoon and early evening on phones, the drive home, in store and in the app. Spanish versions.
+Benefit
+What
+Meal Simple is a real dinner, decided for you.
+Reasons to believe
+What
+Full meals in one spot. Ready in about [20] minutes. Less than takeout for four. Marinated chicken is the top seller.
+Mandatories
+What
+Feature the marinated chicken. A real weeknight moment. H-E-B and Meal Simple recognizable in 2 seconds. Spanish versions.
+Considerations
+What
+Rotate meals by season. A delivery tag version.
+How we'll judge it
+What
+Makes a shortcut feel like caring. She stops worrying about dinner. One message. Works on a phone and at the shelf. Clearly H-E-B.
+Level of the ask
+What
+Platform. Executions after it's approved.
+Studio plan
+How
+One shoot day, photo and video: hero chicken plus 3 spring meals. Combine with the spring seasonal foods shoot. Hold 3 days at kickoff. Plan B: chicken only plus existing photography.
+RACI
+How
+Strategy: MSM responsible, marketing VP accountable.
+Brief: MSM responsible, MSM director accountable, creative strategist and media consulted, creative directors informed.
+Concept: creative directors responsible, marketing VP approves.
+Timing
+How
+Standard, 13 weeks, live March 1. A signage prototype needs 18 weeks, so it either moves to summer or uses existing fixtures.
+
+Numbers in brackets are placeholders for the real targets.
+
+## 8.2 Desired behaviors that work
+Each one names a shift in what people believe, not a sales number.
+
+CHRYSLER
+
+Get people to want to buy a car from Detroit at all.
+
+CHEERIOS
+
+Move it from heart medicine in a bowl to an act of love.
+
+DOWNY
+
+Make every load feel incomplete without it.
+
+THE IDEA
+“Half washed.”
+
+ALLSTATE
+
+Show there's no greater price than the cost of being underinsured.
+
+THE IDEA
+Mayhem.
+
+
+# Glossary
+Every term and acronym used on this site, in plain words.
+
+## 10.1 Terms
+A, R, C, I
+The four RACI roles. Accountable makes the call. Responsible does the work and speaks first in feedback. Consulted gives input. Informed is kept in the loop.
+Activation
+How a platform idea shows up in one channel or moment. See 1.3.
+CARDS
+Five checks for creative work: Connects, Amplifiable, Recognizable, Distinctive, Simple. See 7.2.
+Concept review
+The meeting where creative shows its first ideas. The studio hold gets sized here.
+Desired behavior
+What you want the shopper to do or believe after seeing the work. A shift in belief, not a sales number. See 2.2.
+Execution
+The specific asset: format, size, shot. See 1.3.
+Get / To / By
+The brief in three lines: who, what you want them to do or believe, and the message that moves them. See 1.2.
+Insight
+A truth, the motivation behind it, and the tension it creates. See chapter 3.
+Kickoff
+The meeting where the brief is presented to creative. Thursdays, the week after the brief goes out.
+LPA
+The firm that ran the two-day brief and feedback training this site is built on.
+Mandatories
+Things the work must include, like legal lines or a logo. Keep it to true requirements.
+Media target
+Who the media plan reaches. It's often wider than the strategic target.
+MSM
+The marketing manager who writes and owns the brief.
+OOH
+Out-of-home: billboards, transit and other ads people see outside.
+Platform
+The one big idea everything else is checked against. See 1.3.
+Pre-pro
+The pre-production meeting before a shoot, where the shot list, props and styling get locked.
+RACI
+The chart of who's Responsible, Accountable, Consulted and Informed on a project. See 2.16.
+Reason to believe
+A fact that proves the benefit. Every one has to support the same benefit.
+Strategic target
+The one person the brief is written to, and their mindset. See 2.6.
+Studio hold
+Time held on the studio calendar at kickoff. Sized at concept review, confirmed or released at approval. See 5.4.
+Work types
+Marquee, Extended, Standard, Express, Revision and Exact pickup. Each sets how many weeks the work needs. See 5.2.
+
+Confirm the MSM title and the work type definitions with the brief owners.
+</script>
+</body>
+</html>
