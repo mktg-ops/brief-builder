@@ -154,7 +154,8 @@ p,li,span{text-wrap:pretty}
 .src:not(.p){display:none}
 .tools3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:8px 0 14px}
 .toolcard{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px 22px 24px;display:flex;flex-direction:column;align-items:flex-start}
-.toolcard .tc-name{font-size:26px;font-weight:400;margin:0 0 4px;letter-spacing:-.01em}
+.toolcard .tc-name{font-size:26px;font-weight:400;margin:0 0 4px;letter-spacing:-.01em;display:flex;align-items:center;gap:12px}
+.tc-logo{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:11px;background:#fff;border:1px solid var(--line);flex:none}
 .toolcard .tc-status{font-size:13px;color:var(--red);font-weight:500;margin:0 0 14px}
 .toolcard p,.toolcard li{font-size:15px;line-height:1.45}
 .toolcard ol{padding-left:20px;margin:0 0 18px}
@@ -366,7 +367,8 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:now
   .tline::before{display:none}
   .tline{padding-left:28px}
   .tline::before{display:block;left:7px;right:auto;top:6px;bottom:6px;width:2px;height:auto}
-  .tline li{padding:0 0 22px}.tline li::before{top:2px;left:-28px}
+  .tline{padding-left:28px !important}
+  .tline li{padding:0 0 22px}.tline li::before{top:2px;left:-28px;box-sizing:border-box}
   .tline em{position:static;display:block;margin-bottom:4px}
   .cards{grid-template-columns:1fr;gap:20px}
   .cards > div{display:grid;grid-template-columns:52px 1fr;column-gap:12px}
@@ -417,7 +419,8 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:now
 .fld .pick-menu li{padding:9px 12px}
 /* ---------- Date fields ---------- */
 .datef{position:relative;display:block}
-.datef > input[type=date]{position:absolute;inset:0;opacity:0;pointer-events:none;width:100%;height:100%}
+.datef > input[type=date]{position:absolute;inset:0;opacity:0;width:100%;height:100%;z-index:2;cursor:pointer;-webkit-appearance:none;appearance:none;font-size:16px;margin:0;padding:0;border:0}
+.datef > input[type=date]::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
 .date-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--paper);border:1px solid transparent;border-radius:10px;padding:12px 14px;font:inherit;font-size:16px;line-height:1.45;color:var(--ink);cursor:pointer;text-align:left}
 .date-btn:focus-visible{outline:none;border-color:var(--ink)}
 .date-btn svg{flex:none;color:var(--ink-3)}
@@ -834,20 +837,20 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:now
         <p class="big">The same coach, in the AI tool you already use.</p>
         <div class="tools3">
           <div class="toolcard">
-            <p class="tc-name">Copilot</p>
+            <p class="tc-name"><span class="tc-logo"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><defs><linearGradient id="cpg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2870EA"/><stop offset=".5" stop-color="#7B5CF0"/><stop offset="1" stop-color="#E8508C"/></linearGradient></defs><path fill="url(#cpg)" d="M8.6 3h7.9c1.1 0 2 .7 2.3 1.7l2.6 8.6c.4 1.4-.6 2.7-2 2.7h-3.2l-1.2 3.9c-.3 1-1.2 1.6-2.2 1.6H5.4c-1.4 0-2.4-1.4-2-2.7l2.6-8.4.1-.3L6.3 4.7C6.6 3.7 7.5 3 8.6 3z"/></svg></span>Copilot</p>
             <p class="tc-status">Pilot</p>
             <p>Open the shared agent. Nothing to set up.</p>
             <a class="btn" id="copilotLink" href="#" target="_blank" rel="noopener">Open in Copilot</a>
             <p class="tc-note" id="copilotNote">Link coming soon.</p>
           </div>
           <div class="toolcard">
-            <p class="tc-name">Claude</p>
+            <p class="tc-name"><span class="tc-logo"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><g stroke="#D97757" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="12" x2="21.0" y2="12.0"/><line x1="12" y1="12" x2="19.8" y2="16.5"/><line x1="12" y1="12" x2="16.5" y2="19.8"/><line x1="12" y1="12" x2="12.0" y2="21.0"/><line x1="12" y1="12" x2="7.5" y2="19.8"/><line x1="12" y1="12" x2="4.2" y2="16.5"/><line x1="12" y1="12" x2="3.0" y2="12.0"/><line x1="12" y1="12" x2="4.2" y2="7.5"/><line x1="12" y1="12" x2="7.5" y2="4.2"/><line x1="12" y1="12" x2="12.0" y2="3.0"/><line x1="12" y1="12" x2="16.5" y2="4.2"/><line x1="12" y1="12" x2="19.8" y2="7.5"/></g></svg></span>Claude</p>
             <p class="tc-status">Set up your own, 2 minutes</p>
             <ol><li>In Claude, create a new <b>Project</b> called Brief Coach.</li><li>Paste the instructions into the project's instructions.</li><li>Download the guide and add it to the project's files.</li><li>Open the project and start a chat.</li></ol>
             <div class="tc-btns"><button class="btn ghost" type="button" data-copy="agentInstr">Copy the instructions</button><button class="btn ghost" type="button" data-download="agentGuide" data-name="Brief Builder guide.md">Download the guide</button></div>
           </div>
           <div class="toolcard">
-            <p class="tc-name">Gemini</p>
+            <p class="tc-name"><span class="tc-logo"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><defs><linearGradient id="gmg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#1C7DFF"/><stop offset=".55" stop-color="#5B8DEF"/><stop offset="1" stop-color="#C47BE4"/></linearGradient></defs><path fill="url(#gmg)" d="M12 1.5C12.6 7 17 11.4 22.5 12 17 12.6 12.6 17 12 22.5 11.4 17 7 12.6 1.5 12 7 11.4 11.4 7 12 1.5z"/></svg></span>Gemini</p>
             <p class="tc-status">Pilot</p>
             <p>A shared agent, like the Copilot one. Nothing to set up.</p>
             <a class="btn" id="geminiLink" href="#" target="_blank" rel="noopener">Open in Gemini</a>
@@ -889,8 +892,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:now
     </div>
     <section class="sec wide" id="s10-1" data-t="Terms">
       <header><a class="sn" href="#ch10-1">10.1</a><h2>Terms</h2><span class="src p">Proposed definitions</span></header>
-      <div class="body" style="max-width:none"><dl class="gloss"><div><dt>A, R, C, I</dt><dd>The four RACI roles. Accountable makes the call. Responsible does the work and speaks first in feedback. Consulted gives input. Informed is kept in the loop.</dd></div><div><dt>Activation</dt><dd>How a platform idea shows up in one channel or moment. See 1.3.</dd></div><div><dt>CARDS</dt><dd>Five checks for creative work: Connects, Amplifiable, Recognizable, Distinctive, Simple. See 7.2.</dd></div><div><dt>Concept review</dt><dd>The meeting where creative shows its first ideas. The studio hold gets sized here.</dd></div><div><dt>Desired behavior</dt><dd>What you want the shopper to do or believe after seeing the work. A shift in belief, not a sales number. See 2.2.</dd></div><div><dt>Execution</dt><dd>The specific asset: format, size, shot. See 1.3.</dd></div><div><dt>Get / To / By</dt><dd>The brief in three lines: who, what you want them to do or believe, and the message that moves them. See 1.2.</dd></div><div><dt>Insight</dt><dd>A truth, the motivation behind it, and the tension it creates. See chapter 3.</dd></div><div><dt>Kickoff</dt><dd>The meeting where the brief is presented to creative. Thursdays, the week after the brief goes out.</dd></div><div><dt>LPA</dt><dd>The firm that ran the two-day brief and feedback training this site is built on.</dd></div><div><dt>Mandatories</dt><dd>Things the work must include, like legal lines or a logo. Keep it to true requirements.</dd></div><div><dt>Media target</dt><dd>Who the media plan reaches. It's often wider than the strategic target.</dd></div><div><dt>MSM</dt><dd>The marketing manager who writes and owns the brief.</dd></div><div><dt>OOH</dt><dd>Out-of-home: billboards, transit and other ads people see outside.</dd></div><div><dt>Platform</dt><dd>The one big idea everything else is checked against. See 1.3.</dd></div><div><dt>Pre-pro</dt><dd>The pre-production meeting before a shoot, where the shot list, props and styling get locked.</dd></div><div><dt>RACI</dt><dd>The chart of who's Responsible, Accountable, Consulted and Informed on a project. See 2.16.</dd></div><div><dt>Reason to believe</dt><dd>A fact that proves the benefit. Every one has to support the same benefit.</dd></div><div><dt>Strategic target</dt><dd>The one person the brief is written to, and their mindset. See 2.6.</dd></div><div><dt>Studio hold</dt><dd>Time held on the studio calendar at kickoff. Sized at concept review, confirmed or released at approval. See 5.4.</dd></div><div><dt>Work types</dt><dd>Marquee, Extended, Standard, Express, Revision and Exact pickup. Each sets how many weeks the work needs. See 5.2.</dd></div></dl>
-      <p class="note">Confirm the MSM title and the work type definitions with the brief owners.</p></div>
+      <div class="body" style="max-width:none"><dl class="gloss"><div><dt>A, R, C, I</dt><dd>The four RACI roles. Accountable makes the call. Responsible does the work and speaks first in feedback. Consulted gives input. Informed is kept in the loop.</dd></div><div><dt>Activation</dt><dd>How a platform idea shows up in one channel or moment. See 1.3.</dd></div><div><dt>CARDS</dt><dd>Five checks for creative work: Connects, Amplifiable, Recognizable, Distinctive, Simple. See 7.2.</dd></div><div><dt>Concept review</dt><dd>The meeting where creative shows its first ideas. The studio hold gets sized here.</dd></div><div><dt>Desired behavior</dt><dd>What you want the shopper to do or believe after seeing the work. A shift in belief, not a sales number. See 2.2.</dd></div><div><dt>Execution</dt><dd>The specific asset: format, size, shot. See 1.3.</dd></div><div><dt>Get / To / By</dt><dd>The brief in three lines: who, what you want them to do or believe, and the message that moves them. See 1.2.</dd></div><div><dt>Insight</dt><dd>A truth, the motivation behind it, and the tension it creates. See chapter 3.</dd></div><div><dt>Kickoff</dt><dd>The meeting where the brief is presented to creative. Thursdays, the week after the brief goes out.</dd></div><div><dt>LPA</dt><dd>The firm that ran the two-day brief and feedback training this site is built on.</dd></div><div><dt>Mandatories</dt><dd>Things the work must include, like legal lines or a logo. Keep it to true requirements.</dd></div><div><dt>Media target</dt><dd>Who the media plan reaches. It's often wider than the strategic target.</dd></div><div><dt>MSM</dt><dd>The marketing manager who writes and owns the brief.</dd></div><div><dt>OOH</dt><dd>Out-of-home: billboards, transit and other ads people see outside.</dd></div><div><dt>Platform</dt><dd>The one big idea everything else is checked against. See 1.3.</dd></div><div><dt>Pre-pro</dt><dd>The pre-production meeting before a shoot, where the shot list, props and styling get locked.</dd></div><div><dt>RACI</dt><dd>The chart of who's Responsible, Accountable, Consulted and Informed on a project. See 2.16.</dd></div><div><dt>Reason to believe</dt><dd>A fact that proves the benefit. Every one has to support the same benefit.</dd></div><div><dt>Strategic target</dt><dd>The one person the brief is written to, and their mindset. See 2.6.</dd></div><div><dt>Studio hold</dt><dd>Time held on the studio calendar at kickoff. Sized at concept review, confirmed or released at approval. See 5.4.</dd></div><div><dt>Work types</dt><dd>Marquee, Extended, Standard, Express, Revision and Exact pickup. Each sets how many weeks the work needs. See 5.2.</dd></div></dl></div>
     </section>
   </article>
 
@@ -1370,6 +1372,7 @@ route();
       try { if (inp.showPicker) inp.showPicker(); else inp.focus(); } catch(e){ inp.focus(); }
       setTimeout(function(){ inp.style.pointerEvents = ""; }, 0);
     });
+    inp.addEventListener("click", function(){ try { if (inp.showPicker) inp.showPicker(); } catch(e){} });
     inp.addEventListener("input", sync); inp.addEventListener("change", sync);
     sync();
     inp._dateSync = sync;
@@ -2127,7 +2130,6 @@ Time held on the studio calendar at kickoff. Sized at concept review, confirmed 
 Work types
 Marquee, Extended, Standard, Express, Revision and Exact pickup. Each sets how many weeks the work needs. See 5.2.
 
-Confirm the MSM title and the work type definitions with the brief owners.
 </script>
 </body>
 </html>
