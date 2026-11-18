@@ -228,7 +228,8 @@ p,li,span{text-wrap:pretty}
 .example .gtb{font-size:19px;line-height:1.4;margin:0;grid-template-columns:64px 1fr;gap:8px 0}
 .example .cap{margin:14px 0 0;font-size:14px;color:var(--ink-3)}
 .tool-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 18px}
-.checks li.idle{color:var(--ink-3)}
+.body .checks,.checks{list-style:none;padding:0;margin:0 0 20px}
+.checks li.idle{color:var(--ink-3);display:block;padding-left:0}
 .big{font-weight:300;font-size:21px;line-height:1.45;letter-spacing:-.005em}
 .note{color:var(--ink-3);font-size:14px}
 .gtb{display:grid;grid-template-columns:56px 1fr;gap:10px 0;font-size:20px;line-height:1.4;margin:6px 0 20px}
@@ -1024,7 +1025,7 @@ function renderInsight(){
     [wc(t) <= 30 && wc(m) <= 30 && wc(n) <= 40, "Each part is short enough to remember.", "One part runs long. Try trimming each to one breath."],
     [wc(o) > 0 && wc(o) <= 20, "The one line is under 20 words.", wc(o) ? "The one line runs over 20 words." : "Write the one line."]
   ];
-  if (!(t + m + n + o).trim()){ $("insightChecks").innerHTML = '<li class="idle"><span class="ic" aria-hidden="true">·</span><span>Start typing and six checks appear here.</span></li>'; $("oneOut").textContent = "Your one line shows here."; return; }
+  if (!(t + m + n + o).trim()){ $("insightChecks").innerHTML = '<li class="idle">Start typing and six checks appear here.</li>'; $("oneOut").textContent = "Your one line shows here."; return; }
   $("insightChecks").innerHTML = checks.map(function(c){
     return '<li class="' + (c[0] ? "ok" : "no") + '"><span class="ic" aria-hidden="true">' + (c[0] ? "✓" : "!") + '</span><span><span class="vh">' + (c[0] ? "Passes: " : "Fix: ") + '</span>' + esc(c[0] ? c[1] : c[2]) + '</span></li>';
   }).join("");
